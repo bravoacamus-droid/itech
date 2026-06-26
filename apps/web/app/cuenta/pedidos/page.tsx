@@ -74,7 +74,14 @@ export default async function MyOrdersPage() {
               <tbody>
                 {orders.map((o) => (
                   <tr key={o.id} className="border-b border-surface-border/50 last:border-0">
-                    <td className="px-4 py-3 font-medium text-ink">{o.order_number}</td>
+                    <td className="px-4 py-3">
+                      <Link
+                        href={`/cuenta/pedidos/${o.id}`}
+                        className="font-medium text-brand-600 hover:underline"
+                      >
+                        {o.order_number}
+                      </Link>
+                    </td>
                     <td className="px-4 py-3 text-ink-soft">
                       {new Date(o.created_at).toLocaleDateString("es-PE")}
                     </td>
