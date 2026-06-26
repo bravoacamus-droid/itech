@@ -4,6 +4,7 @@ import { Logo } from "@itech/ui";
 import { ADMIN_ROLES, type AppRole } from "@itech/db";
 import { createClient } from "@/lib/supabase/server";
 import { getMetrics, money } from "@/lib/metrics";
+import { SalesChart } from "@/components/sales-chart";
 import { SignOutButton } from "@/components/signout-button";
 
 const STATUS_LABEL: Record<string, string> = {
@@ -121,6 +122,11 @@ export default async function DashboardPage() {
                   </p>
                 </div>
               ))}
+            </div>
+
+            {/* Ventas por día */}
+            <div className="mt-4">
+              <SalesChart data={metrics.sales_by_day} />
             </div>
 
             <div className="mt-4 grid gap-4 lg:grid-cols-2">

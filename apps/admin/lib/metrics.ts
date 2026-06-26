@@ -9,6 +9,7 @@ export type Metrics = {
   low_stock_count: number;
   by_status: { status: string; count: number; total: number }[];
   top_products: { name: string; qty: number; revenue: number }[];
+  sales_by_day: { day: string; total: number }[];
 };
 
 export async function getMetrics(): Promise<Metrics | null> {
