@@ -1,11 +1,17 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Logo } from "@itech/ui";
 import { ADMIN_ROLES, type AppRole } from "@itech/db";
 import { createClient } from "@/lib/supabase/server";
 import { SignOutButton } from "@/components/signout-button";
 
-const MODULES = [
-  { name: "Catálogo", desc: "Productos, imágenes, precios y descuentos", phase: "Fase 1" },
+const MODULES: {
+  name: string;
+  desc: string;
+  phase: string;
+  href?: string;
+}[] = [
+  { name: "Catálogo", desc: "Productos, imágenes, precios y descuentos", phase: "Disponible", href: "/catalogo" },
   { name: "Inventario", desc: "Almacén inteligente y alarmas de stock", phase: "Fase 2" },
   { name: "POS / Caja", desc: "Ventas, arqueo, apartados y retomas", phase: "Fase 2" },
   { name: "Reparaciones", desc: "Soporte técnico en 7 fases", phase: "Fase 3" },
@@ -79,19 +85,40 @@ export default async function DashboardPage() {
         </p>
 
         <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {MODULES.map((m) => (
-            <div
-              key={m.name}
-              className="rounded-2xl border border-surface-border/70 bg-white p-5 transition hover:shadow-card"
-            >
-              <div className="mb-3 h-10 w-10 rounded-xl bg-brand-gradient" />
-              <h3 className="text-base font-semibold text-ink">{m.name}</h3>
-              <p className="mt-1 text-sm text-ink-muted">{m.desc}</p>
-              <span className="mt-3 inline-block rounded-full bg-surface-subtle px-2.5 py-1 text-xs font-medium text-ink-soft">
-                {m.phase}
-              </span>
-            </div>
-          ))}
+          {MODULES.map((m) => {
+            const inner = (
+              <>
+                <div className="mb-3 h-10 w-10 rounded-xl bg-brand-gradient" />
+                <h3 className="text-base font-semibold text-ink">{m.name}</h3>
+                <p className="mt-1 text-sm text-ink-muted">{m.desc}</p>
+                <span
+                  className={`mt-3 inline-block rounded-full px-2.5 py-1 text-xs font-medium ${
+                    m.href
+                      ? "bg-success/10 text-success"
+                      : "bg-surface-subtle text-ink-soft"
+                  }`}
+                >
+                  {m.phase}
+                </span>
+              </>
+            );
+            return m.href ? (
+              <Link
+                key={m.name}
+                href={m.href}
+                className="rounded-2xl border border-surface-border/70 bg-white p-5 transition hover:-translate-y-0.5 hover:shadow-soft"
+              >
+                {inner}
+              </Link>
+            ) : (
+              <div
+                key={m.name}
+                className="rounded-2xl border border-surface-border/70 bg-white p-5 opacity-80"
+              >
+                {inner}
+              </div>
+            );
+          })}
         </div>
       </main>
     </div>
