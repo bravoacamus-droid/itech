@@ -10,6 +10,7 @@ import {
 import { AdminHeader } from "@/components/admin-header";
 import { Button } from "@itech/ui";
 import { money } from "@/lib/format";
+import { listCompanies } from "@/lib/b2b";
 import { updateTicket } from "@/app/reparaciones/actions";
 
 export const dynamic = "force-dynamic";
@@ -25,9 +26,10 @@ export default async function TicketDetailPage({
 }) {
   const { user } = await requireAdmin();
   const { id } = await params;
-  const [ticket, updates] = await Promise.all([
+  const [ticket, updates, companies] = await Promise.all([
     getTicket(id),
     getTicketUpdates(id),
+    listCompanies(),
   ]);
   if (!ticket) notFound();
 
@@ -84,6 +86,15 @@ export default async function TicketDetailPage({
                 <div>
                   <label className={label}>Técnico</label>
                   <input name="technician_name" defaultValue={ticket.technician_name ?? ""} className={field} />
+                </div>
+                <div>
+                  <label className={label}>Empresa (B2B)</label>
+                  <select name="company_id" defaultValue={ticket.company_id ?? ""} className={field}>
+                    <option value="">— Cliente final —</option>
+                    {companies.map((c) => (
+                      <option key={c.id} value={c.id}>{c.name}</option>
+                    ))}
+                  </select>
                 </div>
                 <div>
                   <label className={label}>Costo estimado (S/)</label>

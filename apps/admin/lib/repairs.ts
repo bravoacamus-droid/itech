@@ -35,6 +35,7 @@ export type Ticket = {
   technician_name: string | null;
   status: string;
   estimated_cost: number | null;
+  company_id: string | null;
   created_at: string;
   delivered_at: string | null;
 };

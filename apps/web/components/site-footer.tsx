@@ -25,6 +25,7 @@ const COLS = [
     links: [
       { label: "Seguimiento de reparación", href: "/seguimiento" },
       { label: "Soporte para empresas", href: "/b2b" },
+      { label: "Portal de empresas", href: "/portal" },
       { label: "Preguntas frecuentes", href: "/preguntas-frecuentes" },
       { label: "Libro de reclamaciones", href: "/libro-reclamaciones" },
     ],

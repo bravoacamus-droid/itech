@@ -46,11 +46,13 @@ export async function updateTicket(id: string, formData: FormData) {
   const estRaw = String(formData.get("estimated_cost") ?? "").trim();
   const estimated = estRaw ? parseFloat(estRaw) : null;
 
+  const companyId = String(formData.get("company_id") ?? "").trim();
   const patch: Record<string, unknown> = {
     status,
     technician_name: technician || null,
     diagnosis: diagnosis || null,
     estimated_cost: estimated,
+    company_id: companyId || null,
   };
   if (status === "entregado") patch.delivered_at = new Date().toISOString();
 
