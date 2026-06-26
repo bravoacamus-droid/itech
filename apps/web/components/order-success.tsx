@@ -6,7 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { useCart } from "./cart/cart-context";
 import { WHATSAPP_NUMBER } from "@/lib/config";
 
-export function OrderSuccess() {
+export function OrderSuccess({ whatsappNumber }: { whatsappNumber?: string }) {
   const params = useSearchParams();
   const { clear } = useCart();
   const orderNumber = params.get("n") ?? "";
@@ -20,7 +20,7 @@ export function OrderSuccess() {
   const msg = encodeURIComponent(
     `Hola, acabo de hacer el pedido ${orderNumber} en la web. Quiero coordinar el pago y la entrega.`,
   );
-  const waLink = `https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`;
+  const waLink = `https://wa.me/${whatsappNumber || WHATSAPP_NUMBER}?text=${msg}`;
 
   return (
     <div className="mx-auto max-w-lg rounded-2xl border border-surface-border/70 bg-white p-8 text-center shadow-card">

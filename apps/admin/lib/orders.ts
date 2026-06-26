@@ -13,6 +13,46 @@ export type OrderRow = {
   created_at: string;
 };
 
+export type OrderItemRow = {
+  id: string;
+  name: string;
+  unit_price: number;
+  quantity: number;
+  line_total: number;
+};
+
+export type OrderDetail = OrderRow & {
+  address: string | null;
+  subtotal: number;
+  items: OrderItemRow[];
+};
+
+export const ORDER_STATUSES = [
+  "pendiente",
+  "pagado",
+  "enviado",
+  "entregado",
+  "anulado",
+] as const;
+
+export async function getOrder(id: string): Promise<OrderDetail | null> {
+  const supabase = await createClient();
+  const { data: order } = await supabase
+    .from("orders")
+    .select("*")
+    .eq("id", id)
+    .maybeSingle<OrderDetail>();
+  if (!order) return null;
+
+  const { data: items } = await supabase
+    .from("order_items")
+    .select("id, name, unit_price, quantity, line_total")
+    .eq("order_id", id)
+    .returns<OrderItemRow[]>();
+
+  return { ...order, items: items ?? [] };
+}
+
 export async function listOrders(): Promise<OrderRow[]> {
   const supabase = await createClient();
   const { data } = await supabase

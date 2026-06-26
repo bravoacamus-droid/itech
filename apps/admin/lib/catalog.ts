@@ -22,6 +22,16 @@ export async function getProduct(id: string): Promise<Product | null> {
   return data ?? null;
 }
 
+export async function getCategory(id: string): Promise<Category | null> {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("categories")
+    .select("*")
+    .eq("id", id)
+    .maybeSingle<Category>();
+  return data ?? null;
+}
+
 export async function listCategories(): Promise<Category[]> {
   const supabase = await createClient();
   const { data } = await supabase

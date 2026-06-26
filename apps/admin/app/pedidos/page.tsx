@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { requireAdmin } from "@/lib/auth";
 import { listOrders, formatPrice } from "@/lib/orders";
 import { AdminHeader } from "@/components/admin-header";
@@ -44,7 +45,12 @@ export default async function OrdersPage() {
                   className="border-b border-surface-border/50 last:border-0"
                 >
                   <td className="px-4 py-3">
-                    <div className="font-medium text-ink">{o.order_number}</div>
+                    <Link
+                      href={`/pedidos/${o.id}`}
+                      className="font-medium text-brand-600 hover:underline"
+                    >
+                      {o.order_number}
+                    </Link>
                     <div className="text-xs text-ink-muted">
                       {new Date(o.created_at).toLocaleString("es-PE")}
                     </div>

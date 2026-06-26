@@ -12,7 +12,9 @@ const MODULES: {
   href?: string;
 }[] = [
   { name: "Catálogo", desc: "Productos, imágenes, precios y descuentos", phase: "Disponible", href: "/catalogo" },
+  { name: "Categorías", desc: "Organiza el catálogo por categorías", phase: "Disponible", href: "/categorias" },
   { name: "Pedidos", desc: "Pedidos de la tienda y su estado", phase: "Disponible", href: "/pedidos" },
+  { name: "Configuración", desc: "WhatsApp y datos de la tienda", phase: "Disponible", href: "/configuracion" },
   { name: "Inventario", desc: "Almacén inteligente y alarmas de stock", phase: "Fase 2" },
   { name: "POS / Caja", desc: "Ventas, arqueo, apartados y retomas", phase: "Fase 2" },
   { name: "Reparaciones", desc: "Soporte técnico en 7 fases", phase: "Fase 3" },
