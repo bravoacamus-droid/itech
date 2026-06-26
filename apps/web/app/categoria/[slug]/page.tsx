@@ -20,7 +20,10 @@ export default async function CategoryPage({
 
   if (!category) notFound();
 
-  const products = await getProducts({ categorySlug: slug });
+  const { items: products } = await getProducts({
+    categorySlug: slug,
+    pageSize: 48,
+  });
 
   return (
     <>

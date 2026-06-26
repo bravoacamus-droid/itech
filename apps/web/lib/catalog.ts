@@ -40,24 +40,80 @@ export async function getFeaturedProducts(limit = 8): Promise<Product[]> {
   return data ?? [];
 }
 
-export async function getProducts(opts?: {
+export type ProductSort = "newest" | "price_asc" | "price_desc" | "name";
+
+export type ProductFilters = {
   categorySlug?: string;
-}): Promise<ProductWithCategory[]> {
+  q?: string;
+  brand?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  sort?: ProductSort;
+  page?: number;
+  pageSize?: number;
+};
+
+export async function getProducts(
+  opts: ProductFilters = {},
+): Promise<{ items: ProductWithCategory[]; total: number }> {
   const supabase = await createClient();
+  const pageSize = opts.pageSize ?? 12;
+  const page = Math.max(1, opts.page ?? 1);
+
   let query = supabase
     .from("products")
-    .select("*, category:categories(name, slug)")
-    .eq("is_active", true)
-    .order("created_at", { ascending: false });
+    .select("*, category:categories(name, slug)", { count: "exact" })
+    .eq("is_active", true);
 
-  if (opts?.categorySlug) {
+  if (opts.categorySlug) {
     const cat = await getCategoryBySlug(opts.categorySlug);
-    if (!cat) return [];
+    if (!cat) return { items: [], total: 0 };
     query = query.eq("category_id", cat.id);
   }
 
-  const { data } = await query.returns<ProductWithCategory[]>();
-  return data ?? [];
+  if (opts.q) {
+    // saneamos para no romper el filtro PostgREST
+    const term = opts.q.replace(/[,()%*]/g, "").trim();
+    if (term) query = query.or(`name.ilike.%${term}%,brand.ilike.%${term}%`);
+  }
+  if (opts.brand) query = query.eq("brand", opts.brand);
+  if (opts.minPrice != null) query = query.gte("price", opts.minPrice);
+  if (opts.maxPrice != null) query = query.lte("price", opts.maxPrice);
+
+  switch (opts.sort) {
+    case "price_asc":
+      query = query.order("price", { ascending: true });
+      break;
+    case "price_desc":
+      query = query.order("price", { ascending: false });
+      break;
+    case "name":
+      query = query.order("name", { ascending: true });
+      break;
+    default:
+      query = query.order("created_at", { ascending: false });
+  }
+
+  const from = (page - 1) * pageSize;
+  query = query.range(from, from + pageSize - 1);
+
+  const { data, count } = await query.returns<ProductWithCategory[]>();
+  return { items: data ?? [], total: count ?? 0 };
+}
+
+export async function getBrands(): Promise<string[]> {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("products")
+    .select("brand")
+    .eq("is_active", true)
+    .not("brand", "is", null);
+  const rows = (data ?? []) as { brand: string | null }[];
+  const set = new Set<string>();
+  rows.forEach((r) => {
+    if (r.brand) set.add(r.brand);
+  });
+  return Array.from(set).sort();
 }
 
 export async function getProductBySlug(
