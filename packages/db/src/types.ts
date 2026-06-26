@@ -41,6 +41,7 @@ export type Product = {
   compare_at_price: number | null;
   currency: string;
   stock: number;
+  low_stock_threshold: number;
   image_url: string | null;
   is_active: boolean;
   is_featured: boolean;

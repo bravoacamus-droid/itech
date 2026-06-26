@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { Logo } from "@itech/ui";
 import { ADMIN_ROLES, type AppRole } from "@itech/db";
 import { createClient } from "@/lib/supabase/server";
+import { listInventory, isLow } from "@/lib/inventory";
 import { SignOutButton } from "@/components/signout-button";
 
 const MODULES: {
@@ -14,8 +15,8 @@ const MODULES: {
   { name: "Catálogo", desc: "Productos, imágenes, precios y descuentos", phase: "Disponible", href: "/catalogo" },
   { name: "Categorías", desc: "Organiza el catálogo por categorías", phase: "Disponible", href: "/categorias" },
   { name: "Pedidos", desc: "Pedidos de la tienda y su estado", phase: "Disponible", href: "/pedidos" },
+  { name: "Inventario", desc: "Stock, alarmas y movimientos", phase: "Disponible", href: "/inventario" },
   { name: "Configuración", desc: "WhatsApp y datos de la tienda", phase: "Disponible", href: "/configuracion" },
-  { name: "Inventario", desc: "Almacén inteligente y alarmas de stock", phase: "Fase 2" },
   { name: "POS / Caja", desc: "Ventas, arqueo, apartados y retomas", phase: "Fase 2" },
   { name: "Reparaciones", desc: "Soporte técnico en 7 fases", phase: "Fase 3" },
   { name: "Contabilidad", desc: "Facturación electrónica SUNAT", phase: "Fase 4" },
@@ -64,6 +65,8 @@ export default async function DashboardPage() {
     );
   }
 
+  const lowStockCount = (await listInventory()).filter(isLow).length;
+
   return (
     <div className="min-h-screen">
       <header className="border-b border-surface-border/70 bg-white">
@@ -94,15 +97,22 @@ export default async function DashboardPage() {
                 <div className="mb-3 h-10 w-10 rounded-xl bg-brand-gradient" />
                 <h3 className="text-base font-semibold text-ink">{m.name}</h3>
                 <p className="mt-1 text-sm text-ink-muted">{m.desc}</p>
-                <span
-                  className={`mt-3 inline-block rounded-full px-2.5 py-1 text-xs font-medium ${
-                    m.href
-                      ? "bg-success/10 text-success"
-                      : "bg-surface-subtle text-ink-soft"
-                  }`}
-                >
-                  {m.phase}
-                </span>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <span
+                    className={`inline-block rounded-full px-2.5 py-1 text-xs font-medium ${
+                      m.href
+                        ? "bg-success/10 text-success"
+                        : "bg-surface-subtle text-ink-soft"
+                    }`}
+                  >
+                    {m.phase}
+                  </span>
+                  {m.name === "Inventario" && lowStockCount > 0 && (
+                    <span className="inline-block rounded-full bg-danger/10 px-2.5 py-1 text-xs font-semibold text-danger">
+                      ⚠ {lowStockCount} stock bajo
+                    </span>
+                  )}
+                </div>
               </>
             );
             return m.href ? (

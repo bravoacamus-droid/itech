@@ -132,6 +132,15 @@ export function ProductForm({ categories, action, product }: Props) {
             className={field}
           />
         </div>
+        <div>
+          <label className={label}>Alerta de stock bajo (≤)</label>
+          <input
+            name="low_stock_threshold"
+            type="number"
+            defaultValue={product?.low_stock_threshold ?? 5}
+            className={field}
+          />
+        </div>
       </div>
 
       <div>

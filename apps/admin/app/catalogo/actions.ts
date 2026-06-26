@@ -36,6 +36,7 @@ function parseForm(formData: FormData) {
     price: num(formData.get("price")),
     compare_at_price: optNum(formData.get("compare_at_price")),
     stock: Math.trunc(num(formData.get("stock"))),
+    low_stock_threshold: Math.max(0, Math.trunc(num(formData.get("low_stock_threshold")))),
     image_url: String(formData.get("image_url") ?? "").trim() || null,
     is_active: formData.get("is_active") === "on",
     is_featured: formData.get("is_featured") === "on",
