@@ -24,7 +24,7 @@ export function SalesChart({
           Aún no hay ventas en este período.
         </p>
       ) : (
-        <div className="flex h-40 items-end gap-1.5">
+        <div className="flex h-40 items-stretch gap-1.5">
           {data.map((d) => {
             const v = Number(d.total);
             const h = Math.round((v / max) * 100);
@@ -36,13 +36,15 @@ export function SalesChart({
             return (
               <div
                 key={d.day}
-                className="group flex flex-1 flex-col items-center justify-end"
+                className="group flex h-full flex-1 flex-col items-center justify-end"
                 title={`${label}: ${money(v)}`}
               >
-                <div
-                  className="w-full rounded-t bg-brand-gradient transition-all group-hover:opacity-80"
-                  style={{ height: `${Math.max(2, h)}%` }}
-                />
+                <div className="flex w-full flex-1 items-end">
+                  <div
+                    className="w-full rounded-t bg-brand-gradient transition-all group-hover:opacity-80"
+                    style={{ height: `${v > 0 ? Math.max(3, h) : 0}%` }}
+                  />
+                </div>
                 <span className="mt-1 text-[9px] text-ink-muted">
                   {label.slice(0, 5)}
                 </span>
