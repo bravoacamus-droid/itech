@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { CartProvider } from "@/components/cart/cart-context";
 
 export const metadata: Metadata = {
   title: "iTech Import Perú — Tecnología, repuestos y soporte",
@@ -14,7 +15,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es-PE">
-      <body>{children}</body>
+      <body>
+        <CartProvider>{children}</CartProvider>
+      </body>
     </html>
   );
 }

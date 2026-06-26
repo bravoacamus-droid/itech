@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { AddToCart } from "@/components/add-to-cart";
 import { getProductBySlug, formatPrice } from "@/lib/catalog";
 
 export const revalidate = 60;
@@ -96,23 +97,23 @@ export default async function ProductPage({
             )}
 
             <div className="mt-8 flex flex-wrap gap-3">
-              <button
+              <AddToCart
                 disabled={!inStock}
-                className="rounded-xl bg-brand-500 px-6 py-3 text-sm font-semibold text-white transition hover:bg-brand-600 disabled:opacity-50"
-              >
-                Agregar al carrito
-              </button>
+                product={{
+                  product_id: product.id,
+                  slug: product.slug,
+                  name: product.name,
+                  price: product.price,
+                  image_url: product.image_url,
+                }}
+              />
               <Link
-                href="/contacto"
+                href="/carrito"
                 className="rounded-xl border border-brand-200 px-6 py-3 text-sm font-semibold text-brand-600 transition hover:bg-brand-50"
               >
-                Consultar
+                Ir al carrito
               </Link>
             </div>
-
-            <p className="mt-6 text-xs text-ink-muted">
-              El carrito y el checkout se habilitan en la siguiente fase.
-            </p>
           </div>
         </div>
       </main>

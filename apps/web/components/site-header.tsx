@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Logo } from "@itech/ui";
+import { CartButton } from "./cart-button";
 
 const NAV = [
   { label: "Inicio", href: "/" },
@@ -38,12 +39,7 @@ export function SiteHeader() {
           >
             Cotizar
           </Link>
-          <Link
-            href="/shop/cart"
-            className="inline-flex items-center gap-2 rounded-xl bg-brand-500 px-4 py-2 text-sm font-semibold text-white shadow-soft transition hover:bg-brand-600"
-          >
-            Carrito
-          </Link>
+          <CartButton />
         </div>
       </div>
     </header>

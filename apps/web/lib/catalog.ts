@@ -1,6 +1,8 @@
 import type { Category, Product, ProductWithCategory } from "@itech/db";
 import { createClient } from "@/lib/supabase/server";
 
+export { formatPrice } from "@/lib/format";
+
 export async function getCategories(): Promise<Category[]> {
   const supabase = await createClient();
   const { data } = await supabase
@@ -69,10 +71,4 @@ export async function getProductBySlug(
     .eq("is_active", true)
     .maybeSingle<ProductWithCategory>();
   return data ?? null;
-}
-
-/** Formatea un precio en soles. */
-export function formatPrice(value: number, currency = "PEN"): string {
-  const symbol = currency === "PEN" ? "S/" : currency + " ";
-  return `${symbol} ${value.toFixed(2)}`;
 }

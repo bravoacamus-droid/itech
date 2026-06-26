@@ -26,6 +26,12 @@ export function AdminHeader({ email }: { email?: string }) {
             >
               Catálogo
             </Link>
+            <Link
+              href="/pedidos"
+              className="rounded-lg px-3 py-2 text-sm font-medium text-ink-soft transition hover:bg-brand-50 hover:text-brand-600"
+            >
+              Pedidos
+            </Link>
           </nav>
         </div>
         <div className="flex items-center gap-4">
