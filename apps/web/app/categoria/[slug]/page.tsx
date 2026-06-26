@@ -5,7 +5,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { ProductCard } from "@/components/product-card";
 import { getCategories, getCategoryBySlug, getProducts } from "@/lib/catalog";
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 export default async function CategoryPage({
   params,

@@ -20,7 +20,7 @@ const PARTNERS = [
   "/images/partner-06.png",
 ];
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
   const [categories, featured] = await Promise.all([
