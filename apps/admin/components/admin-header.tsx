@@ -39,6 +39,12 @@ export function AdminHeader({ email }: { email?: string }) {
               Categorías
             </Link>
             <Link
+              href="/reparaciones"
+              className="rounded-lg px-3 py-2 text-sm font-medium text-ink-soft transition hover:bg-brand-50 hover:text-brand-600"
+            >
+              Reparaciones
+            </Link>
+            <Link
               href="/inventario"
               className="rounded-lg px-3 py-2 text-sm font-medium text-ink-soft transition hover:bg-brand-50 hover:text-brand-600"
             >

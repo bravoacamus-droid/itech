@@ -28,7 +28,7 @@ const MODULES: {
   { name: "Reposición", desc: "Predicción de compra según ventas", phase: "Disponible", href: "/reposicion" },
   { name: "Configuración", desc: "WhatsApp y datos de la tienda", phase: "Disponible", href: "/configuracion" },
   { name: "POS / Caja", desc: "Venta presencial y arqueo de caja", phase: "Disponible", href: "/pos" },
-  { name: "Reparaciones", desc: "Soporte técnico en 7 fases", phase: "Fase 3" },
+  { name: "Reparaciones", desc: "Tickets, estados, técnico y seguimiento", phase: "Disponible", href: "/reparaciones" },
   { name: "Contabilidad", desc: "Facturación electrónica SUNAT", phase: "Fase 4" },
   { name: "CRM + IA", desc: "Pipeline automático con Gemini y RAG", phase: "Fase 5" },
   { name: "B2B", desc: "Reparaciones gestionadas y helpdesk", phase: "Fase 6" },
