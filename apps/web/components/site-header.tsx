@@ -1,18 +1,23 @@
 import Link from "next/link";
 import { Logo } from "@itech/ui";
 import { CartButton } from "./cart-button";
+import { createClient } from "@/lib/supabase/server";
 
 const NAV = [
   { label: "Inicio", href: "/" },
   { label: "Tienda", href: "/shop" },
-  { label: "Categorías", href: "/shop" },
   { label: "Servicios", href: "/servicios" },
   { label: "Soporte Empresas", href: "/b2b" },
   { label: "Nosotros", href: "/nosotros" },
   { label: "Contacto", href: "/contacto" },
 ];
 
-export function SiteHeader() {
+export async function SiteHeader() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   return (
     <header className="sticky top-0 z-50 border-b border-surface-border/70 bg-white/90 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-7xl items-center gap-6 px-4 sm:px-6 lg:px-8">
@@ -34,10 +39,10 @@ export function SiteHeader() {
 
         <div className="ml-auto flex items-center gap-2">
           <Link
-            href="/contacto"
+            href={user ? "/cuenta" : "/cuenta/ingresar"}
             className="hidden rounded-xl border border-brand-200 px-4 py-2 text-sm font-semibold text-brand-600 transition hover:bg-brand-50 sm:inline-flex"
           >
-            Cotizar
+            {user ? "Mi cuenta" : "Ingresar"}
           </Link>
           <CartButton />
         </div>

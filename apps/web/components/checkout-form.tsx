@@ -12,7 +12,13 @@ const field =
   "w-full rounded-xl border border-surface-border px-3 py-2.5 text-sm outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-200";
 const label = "block text-sm font-medium text-ink mb-1";
 
-export function CheckoutForm() {
+export function CheckoutForm({
+  defaultName = "",
+  defaultEmail = "",
+}: {
+  defaultName?: string;
+  defaultEmail?: string;
+}) {
   const router = useRouter();
   const { items, subtotal, clear } = useCart();
   const [loading, setLoading] = useState(false);
@@ -86,7 +92,7 @@ export function CheckoutForm() {
         <div className="grid gap-5 sm:grid-cols-2">
           <div className="sm:col-span-2">
             <label className={label}>Nombre completo *</label>
-            <input name="name" required className={field} />
+            <input name="name" required defaultValue={defaultName} className={field} />
           </div>
           <div>
             <label className={label}>Teléfono / WhatsApp *</label>
@@ -94,7 +100,7 @@ export function CheckoutForm() {
           </div>
           <div>
             <label className={label}>Correo (opcional)</label>
-            <input name="email" type="email" className={field} />
+            <input name="email" type="email" defaultValue={defaultEmail} className={field} />
           </div>
           <div className="sm:col-span-2">
             <label className={label}>Dirección de entrega (opcional)</label>
