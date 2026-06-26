@@ -1,7 +1,8 @@
 import { createBrowserClient } from "@supabase/ssr";
 import type { Database } from "./types";
 
-export type { Database } from "./types";
+export type { Database, AppRole } from "./types";
+export { ADMIN_ROLES } from "./types";
 
 function requireEnv(name: string): string {
   const v = process.env[name];

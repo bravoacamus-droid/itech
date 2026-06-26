@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { Logo } from "@itech/ui";
+import { ADMIN_ROLES, type AppRole } from "@itech/db";
 import { createClient } from "@/lib/supabase/server";
 import { SignOutButton } from "@/components/signout-button";
 
@@ -22,6 +23,36 @@ export default async function DashboardPage() {
 
   if (!user) {
     redirect("/login");
+  }
+
+  const { data: profileRow } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", user.id)
+    .single();
+
+  const role = (profileRow as { role: AppRole } | null)?.role;
+  const isAuthorized = !!role && ADMIN_ROLES.includes(role);
+
+  if (!isAuthorized) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-surface-subtle p-4">
+        <div className="w-full max-w-md rounded-2xl border border-surface-border/70 bg-white p-8 text-center shadow-card">
+          <div className="mb-6 flex justify-center">
+            <Logo height={36} />
+          </div>
+          <h1 className="text-xl font-bold text-ink">Acceso no autorizado</h1>
+          <p className="mt-2 text-sm text-ink-soft">
+            Tu cuenta <span className="font-medium">{user.email}</span> no tiene
+            permisos para el panel administrativo. Si crees que es un error,
+            contacta a un administrador.
+          </p>
+          <div className="mt-6 flex justify-center">
+            <SignOutButton />
+          </div>
+        </div>
+      </main>
+    );
   }
 
   return (
