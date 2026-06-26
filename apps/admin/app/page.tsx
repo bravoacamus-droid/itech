@@ -3,8 +3,16 @@ import { redirect } from "next/navigation";
 import { Logo } from "@itech/ui";
 import { ADMIN_ROLES, type AppRole } from "@itech/db";
 import { createClient } from "@/lib/supabase/server";
-import { listInventory, isLow } from "@/lib/inventory";
+import { getMetrics, money } from "@/lib/metrics";
 import { SignOutButton } from "@/components/signout-button";
+
+const STATUS_LABEL: Record<string, string> = {
+  pendiente: "Pendiente",
+  pagado: "Pagado",
+  enviado: "Enviado",
+  entregado: "Entregado",
+  anulado: "Anulado",
+};
 
 const MODULES: {
   name: string;
@@ -65,7 +73,8 @@ export default async function DashboardPage() {
     );
   }
 
-  const lowStockCount = (await listInventory()).filter(isLow).length;
+  const metrics = await getMetrics();
+  const lowStockCount = metrics?.low_stock_count ?? 0;
 
   return (
     <div className="min-h-screen">
@@ -87,10 +96,99 @@ export default async function DashboardPage() {
       <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
         <h1 className="text-2xl font-bold text-ink">Panel de control</h1>
         <p className="mt-1 text-ink-soft">
-          Bienvenido al back-office de iTech. Los módulos se habilitan por fases.
+          Bienvenido al back-office de iTech.
         </p>
 
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {metrics && (
+          <>
+            {/* KPIs */}
+            <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {[
+                { label: "Ventas totales", value: money(metrics.total_sales) },
+                { label: "Ventas (30 días)", value: money(metrics.sales_30d) },
+                { label: "Pedidos", value: String(metrics.orders_count) },
+                { label: "Ticket promedio", value: money(metrics.avg_ticket) },
+              ].map((k) => (
+                <div
+                  key={k.label}
+                  className="rounded-2xl border border-surface-border/70 bg-white p-5"
+                >
+                  <p className="text-xs font-medium uppercase tracking-wide text-ink-muted">
+                    {k.label}
+                  </p>
+                  <p className="mt-2 text-2xl font-extrabold text-brand-600">
+                    {k.value}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-4 grid gap-4 lg:grid-cols-2">
+              {/* Pedidos por estado */}
+              <div className="rounded-2xl border border-surface-border/70 bg-white p-5">
+                <h2 className="mb-4 text-sm font-semibold text-ink">
+                  Pedidos por estado
+                </h2>
+                {metrics.by_status.length === 0 ? (
+                  <p className="text-sm text-ink-muted">Aún no hay pedidos.</p>
+                ) : (
+                  <ul className="space-y-2">
+                    {metrics.by_status.map((s) => (
+                      <li
+                        key={s.status}
+                        className="flex items-center justify-between text-sm"
+                      >
+                        <span className="text-ink-soft">
+                          {STATUS_LABEL[s.status] ?? s.status}
+                        </span>
+                        <span className="font-medium text-ink">
+                          {s.count}{" "}
+                          <span className="text-ink-muted">
+                            · {money(s.total)}
+                          </span>
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+
+              {/* Top productos */}
+              <div className="rounded-2xl border border-surface-border/70 bg-white p-5">
+                <h2 className="mb-4 text-sm font-semibold text-ink">
+                  Top productos
+                </h2>
+                {metrics.top_products.length === 0 ? (
+                  <p className="text-sm text-ink-muted">
+                    Sin ventas registradas todavía.
+                  </p>
+                ) : (
+                  <ol className="space-y-2">
+                    {metrics.top_products.map((p, i) => (
+                      <li
+                        key={p.name}
+                        className="flex items-center justify-between gap-3 text-sm"
+                      >
+                        <span className="flex items-center gap-2 text-ink">
+                          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-brand-50 text-xs font-bold text-brand-600">
+                            {i + 1}
+                          </span>
+                          <span className="line-clamp-1">{p.name}</span>
+                        </span>
+                        <span className="whitespace-nowrap font-medium text-ink-soft">
+                          {p.qty} u · {money(p.revenue)}
+                        </span>
+                      </li>
+                    ))}
+                  </ol>
+                )}
+              </div>
+            </div>
+          </>
+        )}
+
+        <h2 className="mt-10 mb-4 text-lg font-bold text-ink">Módulos</h2>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {MODULES.map((m) => {
             const inner = (
               <>
