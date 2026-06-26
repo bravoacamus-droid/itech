@@ -25,6 +25,7 @@ const MODULES: {
   { name: "Categorías", desc: "Organiza el catálogo por categorías", phase: "Disponible", href: "/categorias" },
   { name: "Pedidos", desc: "Pedidos de la tienda y su estado", phase: "Disponible", href: "/pedidos" },
   { name: "Inventario", desc: "Stock, alarmas y movimientos", phase: "Disponible", href: "/inventario" },
+  { name: "Reposición", desc: "Predicción de compra según ventas", phase: "Disponible", href: "/reposicion" },
   { name: "Configuración", desc: "WhatsApp y datos de la tienda", phase: "Disponible", href: "/configuracion" },
   { name: "POS / Caja", desc: "Ventas, arqueo, apartados y retomas", phase: "Fase 2" },
   { name: "Reparaciones", desc: "Soporte técnico en 7 fases", phase: "Fase 3" },
