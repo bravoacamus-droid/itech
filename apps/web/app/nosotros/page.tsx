@@ -23,7 +23,7 @@ const VALUES = [
 
 const WHAT = [
   { img: "/images/tech-laptops.jpg", t: "Venta de tecnología", d: "Laptops, componentes y periféricos con garantía." },
-  { img: "/images/para-laptops.webp", t: "Repuestos originales", d: "Piezas para que tu equipo nunca te falle." },
+  { img: "/images/cat-placa.png", t: "Repuestos originales", d: "Piezas para que tu equipo nunca te falle." },
   { img: "/images/soporte-pos.jpg", t: "Servicio y soporte", d: "Reparación especializada y soporte para empresas." },
 ];
 
