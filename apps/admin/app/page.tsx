@@ -33,6 +33,8 @@ const MODULES: {
   { name: "CRM + IA", desc: "Pipeline automático con Gemini y RAG", phase: "Fase 5" },
   { name: "Empresas (B2B)", desc: "Empresas, flota y miembros", phase: "Disponible", href: "/empresas" },
   { name: "Soporte (Helpdesk)", desc: "Tickets B2B con SLA", phase: "Disponible", href: "/soporte" },
+  { name: "Panel B2B", desc: "SLA y tickets por empresa", phase: "Disponible", href: "/panel-b2b" },
+  { name: "Notificaciones", desc: "Avisos automáticos (WhatsApp/email)", phase: "Disponible", href: "/notificaciones" },
   { name: "Multi-sucursal", desc: "Dashboards y empleados", phase: "Fase 7" },
 ];
 

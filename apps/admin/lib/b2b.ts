@@ -106,6 +106,29 @@ export async function getSupportMessages(id: string): Promise<SupportMessage[]> 
   return data ?? [];
 }
 
+export type B2bMetrics = {
+  companies: number;
+  open_tickets: number;
+  overdue: number;
+  resolved: number;
+  sla_compliance: number;
+  by_company: {
+    name: string;
+    plan: string;
+    open: number;
+    total: number;
+    overdue: number;
+    repairs: number;
+  }[];
+};
+
+export async function getB2bMetrics(): Promise<B2bMetrics | null> {
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("b2b_metrics" as never);
+  if (error || !data) return null;
+  return data as unknown as B2bMetrics;
+}
+
 export function slaState(t: { sla_due_at: string | null; status: string }) {
   if (!t.sla_due_at || t.status === "resuelto" || t.status === "cerrado") return "ok";
   return new Date(t.sla_due_at).getTime() < Date.now() ? "vencido" : "en_plazo";
