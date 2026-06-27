@@ -2,7 +2,10 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireAdmin } from "@/lib/auth";
 import { getQuote, getQuoteItems, QUOTE_STATUS_LABEL, money } from "@/lib/quotes";
+import { createClient } from "@/lib/supabase/server";
 import { AdminHeader } from "@/components/admin-header";
+import { Button } from "@itech/ui";
+import { convertQuote, setQuoteStatus } from "@/app/cotizaciones/actions";
 
 export const dynamic = "force-dynamic";
 
@@ -17,6 +20,14 @@ export default async function QuoteDetailPage({
   const { id } = await params;
   const [q, items] = await Promise.all([getQuote(id), getQuoteItems(id)]);
   if (!q) notFound();
+
+  const supabase = await createClient();
+  const { data: linkedOrder } = await supabase
+    .from("orders")
+    .select("id, order_number")
+    .eq("quote_id", id)
+    .maybeSingle();
+  const order = linkedOrder as { id: string; order_number: string } | null;
 
   const publicUrl = `${STORE_URL}/cotizacion/${q.token}`;
   const waMsg = encodeURIComponent(
@@ -81,6 +92,36 @@ export default async function QuoteDetailPage({
               {q.valid_until && (
                 <p className="mt-2 text-ink-muted">Válida hasta {new Date(q.valid_until).toLocaleDateString("es-PE")}</p>
               )}
+            </div>
+
+            <div className="rounded-2xl border border-surface-border/70 bg-white p-5">
+              <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-ink-muted">Acciones</h2>
+              {order ? (
+                <Link
+                  href={`/pedidos/${order.id}`}
+                  className="block rounded-xl bg-success/10 px-4 py-2.5 text-center text-sm font-semibold text-success"
+                >
+                  Pedido generado: {order.order_number}
+                </Link>
+              ) : (
+                <form action={convertQuote.bind(null, id)}>
+                  <Button type="submit" className="w-full">Convertir a pedido</Button>
+                </form>
+              )}
+              <div className="mt-3 flex gap-2 border-t border-surface-border/70 pt-3">
+                <form action={setQuoteStatus.bind(null, id)} className="flex-1">
+                  <input type="hidden" name="status" value="aceptada" />
+                  <button className="w-full rounded-lg bg-brand-50 px-2 py-1.5 text-xs font-semibold text-brand-600 hover:bg-brand-100">
+                    Marcar aceptada
+                  </button>
+                </form>
+                <form action={setQuoteStatus.bind(null, id)} className="flex-1">
+                  <input type="hidden" name="status" value="rechazada" />
+                  <button className="w-full rounded-lg px-2 py-1.5 text-xs font-semibold text-ink-muted hover:bg-surface-subtle">
+                    Marcar rechazada
+                  </button>
+                </form>
+              </div>
             </div>
 
             <div className="rounded-2xl border border-surface-border/70 bg-white p-5">
