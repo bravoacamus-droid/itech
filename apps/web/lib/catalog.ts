@@ -116,6 +116,23 @@ export async function getBrands(): Promise<string[]> {
   return Array.from(set).sort();
 }
 
+export async function getRelatedProducts(
+  product: Pick<Product, "id" | "category_id">,
+  limit = 4,
+): Promise<Product[]> {
+  if (!product.category_id) return [];
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("products")
+    .select("*")
+    .eq("is_active", true)
+    .eq("category_id", product.category_id)
+    .neq("id", product.id)
+    .limit(limit)
+    .returns<Product[]>();
+  return data ?? [];
+}
+
 export async function getProductBySlug(
   slug: string,
 ): Promise<ProductWithCategory | null> {

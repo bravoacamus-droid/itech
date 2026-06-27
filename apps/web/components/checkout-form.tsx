@@ -85,52 +85,70 @@ export function CheckoutForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="grid gap-8 lg:grid-cols-[1fr_320px]"
+      className="grid gap-8 lg:grid-cols-[1fr_360px]"
     >
-      <div className="grid gap-5 rounded-2xl border border-surface-border/70 bg-white p-6">
-        <h2 className="text-lg font-bold text-ink">Datos de contacto</h2>
-        <div className="grid gap-5 sm:grid-cols-2">
-          <div className="sm:col-span-2">
-            <label className={label}>Nombre completo *</label>
-            <input name="name" required defaultValue={defaultName} className={field} />
+      <div className="space-y-6">
+        <div className="grid gap-5 rounded-2xl border border-surface-border/70 bg-white p-6">
+          <div className="flex items-center gap-3">
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-gradient text-sm font-bold text-white">1</span>
+            <h2 className="text-lg font-bold text-ink">Datos de contacto</h2>
           </div>
-          <div>
-            <label className={label}>Teléfono / WhatsApp *</label>
-            <input name="phone" required className={field} placeholder="9XX XXX XXX" />
-          </div>
-          <div>
-            <label className={label}>Correo (opcional)</label>
-            <input name="email" type="email" defaultValue={defaultEmail} className={field} />
-          </div>
-          <div className="sm:col-span-2">
-            <label className={label}>Dirección de entrega (opcional)</label>
-            <input name="address" className={field} />
-          </div>
-          <div className="sm:col-span-2">
-            <label className={label}>Método de pago</label>
-            <select name="payment_method" className={field} defaultValue="whatsapp">
-              {PAYMENT_METHODS.map((m) => (
-                <option key={m.value} value={m.value}>
-                  {m.label}
-                </option>
-              ))}
-            </select>
+          <div className="grid gap-5 sm:grid-cols-2">
+            <div className="sm:col-span-2">
+              <label className={label}>Nombre completo *</label>
+              <input name="name" required defaultValue={defaultName} className={field} />
+            </div>
+            <div>
+              <label className={label}>Teléfono / WhatsApp *</label>
+              <input name="phone" required className={field} placeholder="9XX XXX XXX" />
+            </div>
+            <div>
+              <label className={label}>Correo (opcional)</label>
+              <input name="email" type="email" defaultValue={defaultEmail} className={field} />
+            </div>
+            <div className="sm:col-span-2">
+              <label className={label}>Dirección de entrega (opcional)</label>
+              <input name="address" className={field} placeholder="Calle, número, distrito, ciudad" />
+            </div>
           </div>
         </div>
-        {error && <p className="text-sm text-danger">{error}</p>}
+
+        <div className="grid gap-4 rounded-2xl border border-surface-border/70 bg-white p-6">
+          <div className="flex items-center gap-3">
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-gradient text-sm font-bold text-white">2</span>
+            <h2 className="text-lg font-bold text-ink">Método de pago</h2>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {PAYMENT_METHODS.map((m, i) => (
+              <label
+                key={m.value}
+                className="flex cursor-pointer items-center gap-3 rounded-xl border border-surface-border p-3 text-sm transition hover:border-brand-300 has-[:checked]:border-brand-500 has-[:checked]:bg-brand-50"
+              >
+                <input type="radio" name="payment_method" value={m.value} defaultChecked={i === 0} className="accent-brand-500" />
+                <span className="font-medium text-ink">{m.label}</span>
+              </label>
+            ))}
+          </div>
+          {error && <p className="text-sm text-danger">{error}</p>}
+        </div>
       </div>
 
-      <aside className="h-fit rounded-2xl border border-surface-border/70 bg-white p-6">
+      <aside className="h-fit rounded-2xl border border-surface-border/70 bg-white p-6 lg:sticky lg:top-44">
         <h2 className="text-lg font-bold text-ink">Tu pedido</h2>
-        <ul className="mt-4 space-y-2 text-sm">
+        <ul className="mt-4 space-y-3">
           {items.map((i) => (
-            <li key={i.product_id} className="flex justify-between gap-2">
-              <span className="text-ink-soft">
-                {i.quantity}× {i.name}
+            <li key={i.product_id} className="flex items-center gap-3">
+              <span className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-surface-border/60 bg-white p-1">
+                {i.image_url && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={i.image_url} alt={i.name} className="max-h-full w-auto object-contain" />
+                )}
               </span>
-              <span className="font-medium text-ink">
-                {formatPrice(i.price * i.quantity)}
+              <span className="min-w-0 flex-1 text-sm text-ink-soft">
+                <span className="line-clamp-1 font-medium text-ink">{i.name}</span>
+                <span className="text-xs text-ink-muted">{i.quantity} × {formatPrice(i.price)}</span>
               </span>
+              <span className="text-sm font-semibold text-ink">{formatPrice(i.price * i.quantity)}</span>
             </li>
           ))}
         </ul>
@@ -146,7 +164,7 @@ export function CheckoutForm({
           {loading ? "Procesando…" : "Confirmar pedido"}
         </button>
         <p className="mt-3 text-center text-xs text-ink-muted">
-          Coordinaremos el pago y la entrega contigo.
+          🔒 Coordinaremos el pago y la entrega contigo.
         </p>
       </aside>
     </form>
