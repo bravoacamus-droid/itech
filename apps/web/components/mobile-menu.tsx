@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { SearchBar } from "./search-bar";
 
-type NavItem = { label: string; href: string };
+type NavItem = { label: string; href: string; mega?: boolean };
 
 export function MobileMenu({
   nav,

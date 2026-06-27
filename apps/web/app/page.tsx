@@ -5,10 +5,10 @@ import { ProductCard } from "@/components/product-card";
 import { getCategories, getFeaturedProducts } from "@/lib/catalog";
 
 const FEATURES = [
-  { title: "Envío a todo el Perú", desc: "Despachos rápidos y seguros" },
-  { title: "Garantía real", desc: "Respaldo en cada producto" },
-  { title: "Servicio técnico", desc: "Reparación especializada" },
-  { title: "Pago fácil", desc: "Yape, Plin, tarjeta y más" },
+  { icon: "🚚", title: "Envío a todo el Perú", desc: "Despachos rápidos y seguros" },
+  { icon: "🛡️", title: "Garantía real", desc: "Respaldo en cada producto" },
+  { icon: "🔧", title: "Servicio técnico", desc: "Reparación especializada" },
+  { icon: "💳", title: "Pago fácil", desc: "Yape, Plin, tarjeta y más" },
 ];
 
 const PARTNERS = [
@@ -58,15 +58,20 @@ export default async function HomePage() {
                 </div>
               </div>
             </div>
-            <div className="grid gap-4">
+            <div className="grid grid-rows-3 gap-4">
               {[
                 { img: "/images/banner-2.jpg", t: "Teclado Gamer" },
                 { img: "/images/banner-3.jpg", t: "Fuente de Poder" },
                 { img: "/images/banner-4.jpg", t: "Disco SSD" },
               ].map((b) => (
-                <Link key={b.t} href="/shop" className="group relative overflow-hidden rounded-2xl shadow-card">
+                <Link
+                  key={b.t}
+                  href="/shop"
+                  className="group relative flex min-h-[110px] items-center justify-center overflow-hidden rounded-2xl border border-surface-border/70 bg-white p-2 shadow-card transition hover:border-brand-200 hover:shadow-soft"
+                >
+                  {/* object-contain: muestra el banner completo, sin recortes */}
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={b.img} alt={b.t} className="h-32 w-full object-cover transition group-hover:scale-105" />
+                  <img src={b.img} alt={b.t} className="max-h-full w-auto object-contain transition duration-300 group-hover:scale-105" />
                 </Link>
               ))}
             </div>
@@ -77,10 +82,17 @@ export default async function HomePage() {
         <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
             {FEATURES.map((f) => (
-              <div key={f.title} className="rounded-2xl border border-surface-border/70 bg-white p-5">
-                <div className="mb-2 h-9 w-9 rounded-xl bg-brand-gradient" />
-                <h3 className="text-sm font-semibold text-ink">{f.title}</h3>
-                <p className="text-xs text-ink-muted">{f.desc}</p>
+              <div
+                key={f.title}
+                className="flex items-center gap-3 rounded-2xl border border-surface-border/70 bg-white p-4 transition hover:border-brand-200 hover:shadow-card"
+              >
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-xl">
+                  {f.icon}
+                </div>
+                <div>
+                  <h3 className="text-sm font-semibold text-ink">{f.title}</h3>
+                  <p className="text-xs text-ink-muted">{f.desc}</p>
+                </div>
               </div>
             ))}
           </div>
