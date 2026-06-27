@@ -6,6 +6,7 @@ import { AdminHeader } from "@/components/admin-header";
 import { Button } from "@itech/ui";
 import { updateOrderStatus } from "@/app/pedidos/actions";
 import { emitFromOrder } from "@/app/facturacion/actions";
+import { getOrderReturns } from "@/lib/returns";
 
 export const dynamic = "force-dynamic";
 
@@ -27,6 +28,7 @@ export default async function OrderDetailPage({
   const order = await getOrder(id);
   if (!order) notFound();
 
+  const returns = await getOrderReturns(id);
   const action = updateOrderStatus.bind(null, id);
 
   return (
@@ -158,6 +160,32 @@ export default async function OrderDetailPage({
                   Emitir factura
                 </Button>
               </form>
+            </div>
+
+            <div className="rounded-2xl border border-surface-border/70 bg-white p-5">
+              <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-ink-muted">
+                Devoluciones
+              </h2>
+              {returns.length > 0 ? (
+                <ul className="mb-3 space-y-1 text-sm">
+                  {returns.map((r) => (
+                    <li key={r.id} className="flex justify-between">
+                      <span className="text-ink">{r.return_number}</span>
+                      <span className="text-ink-soft">
+                        S/ {Number(r.total_refund).toFixed(2)}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="mb-3 text-sm text-ink-muted">Sin devoluciones.</p>
+              )}
+              <Link
+                href={`/pedidos/${order.id}/devolucion`}
+                className="block rounded-xl border border-brand-200 px-4 py-2 text-center text-sm font-semibold text-brand-600 transition hover:bg-brand-50"
+              >
+                Registrar devolución
+              </Link>
             </div>
           </aside>
         </div>
