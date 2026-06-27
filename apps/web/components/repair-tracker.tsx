@@ -22,6 +22,8 @@ type Result = {
     estimated_cost: number | null;
     created_at: string;
     delivered_at: string | null;
+    warranty_until: string | null;
+    warranty_days_left: number | null;
   };
   timeline?: { status: string; note: string | null; at: string }[];
 };
@@ -104,6 +106,24 @@ export function RepairTracker() {
               {STATUS_LABEL[res.ticket.status] ?? res.ticket.status}
             </span>
           </div>
+
+          {res.ticket.warranty_days_left != null && (
+            <div className="mt-4 rounded-xl bg-surface-subtle p-3 text-sm">
+              {res.ticket.warranty_days_left > 0 ? (
+                <span className="font-semibold text-success">
+                  Garantía vigente: {res.ticket.warranty_days_left} días restantes
+                </span>
+              ) : (
+                <span className="font-semibold text-danger">Garantía vencida</span>
+              )}
+              {res.ticket.warranty_until && (
+                <span className="text-ink-muted">
+                  {" "}
+                  (hasta {new Date(res.ticket.warranty_until).toLocaleDateString("es-PE")})
+                </span>
+              )}
+            </div>
+          )}
 
           <ol className="mt-6 space-y-4">
             {(res.timeline ?? []).map((u, i) => (

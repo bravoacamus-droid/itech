@@ -36,9 +36,22 @@ export type Ticket = {
   status: string;
   estimated_cost: number | null;
   company_id: string | null;
+  warranty_days: number;
+  parent_ticket_id: string | null;
+  is_warranty: boolean;
   created_at: string;
   delivered_at: string | null;
 };
+
+/** Días restantes de garantía (si fue entregado); null si no aplica. */
+export function warrantyLeft(t: {
+  delivered_at: string | null;
+  warranty_days: number;
+}): number | null {
+  if (!t.delivered_at || !t.warranty_days) return null;
+  const until = new Date(t.delivered_at).getTime() + t.warranty_days * 86400000;
+  return Math.max(0, Math.ceil((until - Date.now()) / 86400000));
+}
 
 export type TicketUpdate = {
   id: string;

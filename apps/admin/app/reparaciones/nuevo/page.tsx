@@ -97,6 +97,10 @@ export default async function NewTicketPage() {
                 <label className={label}>Costo estimado (S/)</label>
                 <input name="estimated_cost" type="number" step="0.01" min={0} className={field} />
               </div>
+              <div>
+                <label className={label}>Garantía (días)</label>
+                <input name="warranty_days" type="number" min={0} defaultValue={90} className={field} />
+              </div>
             </div>
           </div>
 

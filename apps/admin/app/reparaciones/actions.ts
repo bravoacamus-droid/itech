@@ -5,6 +5,19 @@ import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/auth";
 import { REPAIR_STATUSES } from "@/lib/repairs";
 
+export async function reopenWarranty(ticketId: string, formData: FormData) {
+  const { supabase } = await requireAdmin();
+  const note = String(formData.get("note") ?? "").trim();
+  const { data, error } = await supabase.rpc("reopen_warranty" as never, {
+    p_ticket: ticketId,
+    p_note: note,
+  } as never);
+  if (error) throw new Error(error.message);
+  const row = (Array.isArray(data) ? data[0] : data) as { ticket_id?: string } | null;
+  revalidatePath("/reparaciones");
+  redirect(row?.ticket_id ? `/reparaciones/${row.ticket_id}` : "/reparaciones");
+}
+
 export async function createTicket(formData: FormData) {
   const { supabase } = await requireAdmin();
   const name = String(formData.get("customer_name") ?? "").trim();
@@ -22,6 +35,7 @@ export async function createTicket(formData: FormData) {
     reported_issue: String(formData.get("reported_issue") ?? "").trim(),
     technician_name: String(formData.get("technician_name") ?? "").trim(),
     estimated_cost: String(formData.get("estimated_cost") ?? "").trim(),
+    warranty_days: String(formData.get("warranty_days") ?? "").trim(),
   };
 
   const { data, error } = await supabase.rpc("create_repair_ticket" as never, {

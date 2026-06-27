@@ -11,7 +11,8 @@ import { AdminHeader } from "@/components/admin-header";
 import { Button } from "@itech/ui";
 import { money } from "@/lib/format";
 import { listCompanies } from "@/lib/b2b";
-import { updateTicket } from "@/app/reparaciones/actions";
+import { warrantyLeft } from "@/lib/repairs";
+import { updateTicket, reopenWarranty } from "@/app/reparaciones/actions";
 
 export const dynamic = "force-dynamic";
 
@@ -128,6 +129,48 @@ export default async function TicketDetailPage({
               <div className="mt-2 rounded-lg bg-surface-subtle px-3 py-2 text-xs">
                 <div><span className="text-ink-muted">N°:</span> {ticket.ticket_number}</div>
               </div>
+            </div>
+
+            <div className="rounded-2xl border border-surface-border/70 bg-white p-5">
+              <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-ink-muted">
+                Garantía
+              </h2>
+              {ticket.is_warranty && (
+                <p className="mb-2 rounded-lg bg-brand-50 px-2 py-1 text-xs font-medium text-brand-600">
+                  Ticket de garantía (sin costo)
+                </p>
+              )}
+              {ticket.delivered_at ? (
+                (() => {
+                  const left = warrantyLeft(ticket);
+                  return (
+                    <p className="text-sm">
+                      {left && left > 0 ? (
+                        <span className="font-semibold text-success">{left} días</span>
+                      ) : (
+                        <span className="font-semibold text-danger">Vencida</span>
+                      )}{" "}
+                      <span className="text-ink-muted">
+                        (entregado {new Date(ticket.delivered_at).toLocaleDateString("es-PE")}, {ticket.warranty_days} días)
+                      </span>
+                    </p>
+                  );
+                })()
+              ) : (
+                <p className="text-sm text-ink-muted">
+                  La garantía ({ticket.warranty_days} días) inicia al entregar el equipo.
+                </p>
+              )}
+              <form action={reopenWarranty.bind(null, ticket.id)} className="mt-3 space-y-2 border-t border-surface-border/70 pt-3">
+                <input
+                  name="note"
+                  placeholder="Motivo de la reapertura"
+                  className="w-full rounded-xl border border-surface-border px-3 py-2 text-sm outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-200"
+                />
+                <Button type="submit" variant="outline" className="w-full">
+                  Reabrir por garantía (sin costo)
+                </Button>
+              </form>
             </div>
 
             <div className="rounded-2xl border border-surface-border/70 bg-white p-5">
