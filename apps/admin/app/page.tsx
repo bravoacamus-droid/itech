@@ -29,7 +29,7 @@ const MODULES: {
   { name: "Configuración", desc: "WhatsApp y datos de la tienda", phase: "Disponible", href: "/configuracion" },
   { name: "POS / Caja", desc: "Venta presencial y arqueo de caja", phase: "Disponible", href: "/pos" },
   { name: "Reparaciones", desc: "Tickets, estados, técnico y seguimiento", phase: "Disponible", href: "/reparaciones" },
-  { name: "Contabilidad", desc: "Facturación electrónica SUNAT", phase: "Fase 4" },
+  { name: "Facturación SUNAT", desc: "Comprobantes electrónicos y certificado", phase: "Disponible", href: "/facturacion" },
   { name: "CRM + IA", desc: "Pipeline automático con Gemini y RAG", phase: "Fase 5" },
   { name: "Empresas (B2B)", desc: "Empresas, flota y miembros", phase: "Disponible", href: "/empresas" },
   { name: "Soporte (Helpdesk)", desc: "Tickets B2B con SLA", phase: "Disponible", href: "/soporte" },

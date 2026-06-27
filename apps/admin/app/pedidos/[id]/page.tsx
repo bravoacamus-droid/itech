@@ -5,6 +5,7 @@ import { getOrder, formatPrice, ORDER_STATUSES } from "@/lib/orders";
 import { AdminHeader } from "@/components/admin-header";
 import { Button } from "@itech/ui";
 import { updateOrderStatus } from "@/app/pedidos/actions";
+import { emitFromOrder } from "@/app/facturacion/actions";
 
 export const dynamic = "force-dynamic";
 
@@ -130,6 +131,34 @@ export default async function OrderDetailPage({
                 </Button>
               </div>
             </form>
+
+            <div className="rounded-2xl border border-surface-border/70 bg-white p-5">
+              <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-ink-muted">
+                Comprobante (SUNAT)
+              </h2>
+              <form action={emitFromOrder.bind(null, order.id)} className="space-y-2">
+                <input type="hidden" name="doc_type" value="03" />
+                <Button type="submit" variant="outline" className="w-full">
+                  Emitir boleta
+                </Button>
+              </form>
+              <form action={emitFromOrder.bind(null, order.id)} className="mt-3 space-y-2 border-t border-surface-border/70 pt-3">
+                <input type="hidden" name="doc_type" value="01" />
+                <input
+                  name="customer_doc"
+                  placeholder="RUC (11 dígitos)"
+                  className="w-full rounded-xl border border-surface-border px-3 py-2 text-sm outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-200"
+                />
+                <input
+                  name="customer_name"
+                  placeholder="Razón social"
+                  className="w-full rounded-xl border border-surface-border px-3 py-2 text-sm outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-200"
+                />
+                <Button type="submit" variant="outline" className="w-full">
+                  Emitir factura
+                </Button>
+              </form>
+            </div>
           </aside>
         </div>
       </main>

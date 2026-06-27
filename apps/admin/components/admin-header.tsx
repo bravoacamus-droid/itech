@@ -81,6 +81,12 @@ export function AdminHeader({ email }: { email?: string }) {
               Pedidos
             </Link>
             <Link
+              href="/facturacion"
+              className="rounded-lg px-3 py-2 text-sm font-medium text-ink-soft transition hover:bg-brand-50 hover:text-brand-600"
+            >
+              Facturación
+            </Link>
+            <Link
               href="/configuracion"
               className="rounded-lg px-3 py-2 text-sm font-medium text-ink-soft transition hover:bg-brand-50 hover:text-brand-600"
             >
