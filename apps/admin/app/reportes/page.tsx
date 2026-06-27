@@ -55,9 +55,19 @@ export default async function ReportsPage() {
                 )}
                 <button
                   type="submit"
+                  name="format"
+                  value="xlsx"
                   className="rounded-xl bg-brand-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-600"
                 >
-                  Descargar CSV
+                  Excel
+                </button>
+                <button
+                  type="submit"
+                  name="format"
+                  value="csv"
+                  className="rounded-xl border border-brand-200 px-4 py-2 text-sm font-semibold text-brand-600 transition hover:bg-brand-50"
+                >
+                  CSV
                 </button>
               </div>
             </form>

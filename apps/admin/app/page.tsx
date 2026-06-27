@@ -7,6 +7,7 @@ import { getMetrics, money } from "@/lib/metrics";
 import { SalesChart } from "@/components/sales-chart";
 import { SignOutButton } from "@/components/signout-button";
 import { PushToggle } from "@/components/push-toggle";
+import { NotificationBell } from "@/components/notification-bell";
 
 const STATUS_LABEL: Record<string, string> = {
   pendiente: "Pendiente",
@@ -100,7 +101,8 @@ export default async function DashboardPage() {
               ERP
             </span>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
+            <NotificationBell />
             <span className="hidden text-sm text-ink-soft sm:inline">{user.email}</span>
             <SignOutButton />
           </div>

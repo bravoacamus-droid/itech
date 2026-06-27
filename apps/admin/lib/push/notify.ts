@@ -25,8 +25,25 @@ async function log(
   }
 }
 
-/** Notifica a un usuario. NUNCA lanza; loguea attempt/ok/error en push_log. */
+/** Guarda el aviso en la bandeja in-app del usuario (best-effort). */
+async function saveInApp(userId: string, payload: PushPayload) {
+  try {
+    const admin = createAdminClient();
+    await admin.from("user_notifications").insert({
+      user_id: userId,
+      title: payload.title,
+      body: payload.body,
+      url: payload.url ?? null,
+      tag: payload.tag ?? null,
+    } as never);
+  } catch {
+    // la bandeja es complementaria; nunca rompe el flujo
+  }
+}
+
+/** Notifica a un usuario: bandeja in-app + push. NUNCA lanza; loguea en push_log. */
 export async function notifyUser(userId: string, payload: PushPayload, source = "app") {
+  await saveInApp(userId, payload);
   await log(source, userId, payload.title, "attempt");
   try {
     const { sent } = await sendPushToUser(userId, payload);

@@ -1,4 +1,5 @@
 import { NextRequest } from "next/server";
+import ExcelJS from "exceljs";
 import { createClient } from "@/lib/supabase/server";
 import { STAFF_ROLES, type AppRole } from "@itech/db";
 
@@ -17,6 +18,40 @@ function toCsv(headers: string[], rows: (string | number | null)[][]): string {
 
 const fmt = (d: string | null) =>
   d ? new Date(d).toLocaleString("es-PE", { timeZone: "America/Lima" }) : "";
+
+const TITLES: Record<string, string> = {
+  ventas: "Reporte de ventas",
+  inventario: "Reporte de inventario",
+  asistencia: "Reporte de asistencia",
+  transferencias: "Reporte de transferencias",
+};
+
+async function toXlsx(tipo: string, headers: string[], rows: (string | number | null)[][]): Promise<ArrayBuffer> {
+  const wb = new ExcelJS.Workbook();
+  wb.creator = "iTech ERP";
+  const ws = wb.addWorksheet(TITLES[tipo] ?? "Reporte", {
+    views: [{ state: "frozen", ySplit: 1 }],
+  });
+  ws.columns = headers.map((h) => ({ header: h, key: h, width: Math.max(14, Math.min(40, h.length + 6)) }));
+  // Encabezado con estilo de marca
+  const head = ws.getRow(1);
+  head.font = { bold: true, color: { argb: "FFFFFFFF" } };
+  head.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FF0EA5E9" } };
+  head.alignment = { vertical: "middle" };
+  head.height = 20;
+  rows.forEach((r) => ws.addRow(r));
+  ws.autoFilter = { from: { row: 1, column: 1 }, to: { row: 1, column: headers.length } };
+  // Ajuste de ancho según contenido
+  ws.columns.forEach((col) => {
+    let max = String(col.header ?? "").length;
+    col.eachCell?.({ includeEmpty: false }, (cell) => {
+      const len = String(cell.value ?? "").length;
+      if (len > max) max = len;
+    });
+    col.width = Math.max(12, Math.min(48, max + 4));
+  });
+  return (await wb.xlsx.writeBuffer()) as unknown as ArrayBuffer;
+}
 
 export async function GET(
   req: NextRequest,
@@ -117,8 +152,19 @@ export async function GET(
     return new Response("Reporte no válido", { status: 404 });
   }
 
-  const csv = toCsv(headers, rows);
   const stamp = new Date().toISOString().slice(0, 10);
+
+  if (sp.get("format") === "xlsx") {
+    const buf = await toXlsx(tipo, headers, rows);
+    return new Response(buf, {
+      headers: {
+        "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "Content-Disposition": `attachment; filename="itech-${tipo}-${stamp}.xlsx"`,
+      },
+    });
+  }
+
+  const csv = toCsv(headers, rows);
   return new Response(csv, {
     headers: {
       "Content-Type": "text/csv; charset=utf-8",

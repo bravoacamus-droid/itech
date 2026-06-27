@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Logo } from "@itech/ui";
 import { SignOutButton } from "./signout-button";
+import { NotificationBell } from "./notification-bell";
 
 export function AdminHeader({ email }: { email?: string }) {
   return (
@@ -130,7 +131,8 @@ export function AdminHeader({ email }: { email?: string }) {
             </Link>
           </nav>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
+          <NotificationBell />
           {email && (
             <span className="hidden text-sm text-ink-soft sm:inline">
               {email}
