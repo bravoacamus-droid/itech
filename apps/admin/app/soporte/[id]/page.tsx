@@ -10,7 +10,8 @@ import {
 } from "@/lib/b2b";
 import { AdminHeader } from "@/components/admin-header";
 import { Button } from "@itech/ui";
-import { replySupport, changeSupportStatus } from "@/app/soporte/actions";
+import { changeSupportStatus } from "@/app/soporte/actions";
+import { SupportAiBox } from "@/components/support-ai-box";
 
 export const dynamic = "force-dynamic";
 
@@ -78,10 +79,7 @@ export default async function SupportTicketPage({
               )}
             </div>
 
-            <form action={replySupport.bind(null, id)} className="mt-5 flex gap-2 border-t border-surface-border/70 pt-4">
-              <input name="body" required placeholder="Escribe una respuesta…" className={field} />
-              <Button type="submit">Enviar</Button>
-            </form>
+            <SupportAiBox ticketId={id} />
           </div>
 
           {/* Estado */}

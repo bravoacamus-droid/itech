@@ -20,6 +20,9 @@ importers:
 
   apps/admin:
     dependencies:
+      '@itech/ai':
+        specifier: workspace:*
+        version: link:../../packages/ai
       '@itech/db':
         specifier: workspace:*
         version: link:../../packages/db
@@ -69,6 +72,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@itech/ai':
+        specifier: workspace:*
+        version: link:../../packages/ai
       '@itech/db':
         specifier: workspace:*
         version: link:../../packages/db
@@ -112,6 +118,12 @@ importers:
       tailwindcss:
         specifier: ^3.4.17
         version: 3.4.19
+      typescript:
+        specifier: ^5.7.2
+        version: 5.9.3
+
+  packages/ai:
+    devDependencies:
       typescript:
         specifier: ^5.7.2
         version: 5.9.3

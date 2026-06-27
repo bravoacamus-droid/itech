@@ -10,6 +10,7 @@
     "clean": "rimraf .next .turbo"
   },
   "dependencies": {
+    "@itech/ai": "workspace:*",
     "@itech/db": "workspace:*",
     "@itech/ui": "workspace:*",
     "@supabase/ssr": "^0.5.2",
