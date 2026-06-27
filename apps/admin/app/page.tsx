@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getMetrics, money } from "@/lib/metrics";
 import { SalesChart } from "@/components/sales-chart";
 import { SignOutButton } from "@/components/signout-button";
+import { PushToggle } from "@/components/push-toggle";
 
 const STATUS_LABEL: Record<string, string> = {
   pendiente: "Pendiente",
@@ -41,6 +42,7 @@ const MODULES: {
   { name: "Sucursales", desc: "Stock y ventas por sede (comparativo)", phase: "Disponible", href: "/sucursales" },
   { name: "Empleados", desc: "Asistencia / control de horario", phase: "Disponible", href: "/empleados", staff: true },
   { name: "Accesos", desc: "Roles y sucursales por usuario", phase: "Disponible", href: "/accesos" },
+  { name: "Reportes", desc: "Exporta CSV: ventas, inventario, asistencia", phase: "Disponible", href: "/reportes", staff: true },
 ];
 
 export default async function DashboardPage() {
@@ -110,6 +112,10 @@ export default async function DashboardPage() {
         <p className="mt-1 text-ink-soft">
           Bienvenido al back-office de iTech.
         </p>
+
+        <div className="mt-6">
+          <PushToggle />
+        </div>
 
         {metrics && (
           <>
