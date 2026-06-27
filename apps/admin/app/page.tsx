@@ -28,6 +28,7 @@ const MODULES: {
   { name: "Reposición", desc: "Predicción de compra según ventas", phase: "Disponible", href: "/reposicion" },
   { name: "Configuración", desc: "WhatsApp y datos de la tienda", phase: "Disponible", href: "/configuracion" },
   { name: "POS / Caja", desc: "Venta presencial y arqueo de caja", phase: "Disponible", href: "/pos" },
+  { name: "Cotizaciones", desc: "Cotizador con branding (PDF/enlace)", phase: "Disponible", href: "/cotizaciones" },
   { name: "Reparaciones", desc: "Tickets, estados, técnico y seguimiento", phase: "Disponible", href: "/reparaciones" },
   { name: "Facturación SUNAT", desc: "Comprobantes electrónicos y certificado", phase: "Disponible", href: "/facturacion" },
   { name: "CRM + IA", desc: "Pipeline automático con Gemini y RAG", phase: "Fase 5" },

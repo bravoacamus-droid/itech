@@ -27,6 +27,12 @@ export function AdminHeader({ email }: { email?: string }) {
               POS
             </Link>
             <Link
+              href="/cotizaciones"
+              className="rounded-lg px-3 py-2 text-sm font-medium text-ink-soft transition hover:bg-brand-50 hover:text-brand-600"
+            >
+              Cotizaciones
+            </Link>
+            <Link
               href="/catalogo"
               className="rounded-lg px-3 py-2 text-sm font-medium text-ink-soft transition hover:bg-brand-50 hover:text-brand-600"
             >
