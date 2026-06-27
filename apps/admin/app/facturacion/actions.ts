@@ -45,7 +45,7 @@ export async function emitFromOrder(orderId: string, formData: FormData) {
     p_customer: customer,
   } as never);
   if (error) throw new Error(error.message);
-  const row = (Array.isArray(data) ? data[0] : data) as { id?: string } | null;
+  const row = (Array.isArray(data) ? data[0] : data) as { invoice_id?: string } | null;
   revalidatePath("/facturacion");
-  redirect(row?.id ? `/facturacion/${row.id}` : "/facturacion");
+  redirect(row?.invoice_id ? `/facturacion/${row.invoice_id}` : "/facturacion");
 }
