@@ -44,8 +44,8 @@ export function ShoppingAssistant() {
 
   return (
     <div className="mx-auto max-w-2xl">
-      <div className="rounded-2xl border border-surface-border/70 bg-white p-6 shadow-card">
-        <h1 className="text-2xl font-bold text-ink">Asistente de compra</h1>
+      <div className="rounded-2xl border border-surface-border/70 bg-white p-6 shadow-soft">
+        <h2 className="text-lg font-bold text-ink">Pregúntale al asistente</h2>
         <p className="mt-1 text-sm text-ink-soft">
           Cuéntanos qué necesitas y te recomendamos productos de la tienda.
         </p>
@@ -108,7 +108,7 @@ export function ShoppingAssistant() {
                   href={`/producto/${p.slug}`}
                   className="group flex flex-col overflow-hidden rounded-2xl border border-surface-border/70 bg-white transition hover:shadow-soft"
                 >
-                  <div className="flex h-32 items-center justify-center bg-surface-subtle p-3">
+                  <div className="flex h-32 items-center justify-center bg-white p-3">
                     {p.image_url && (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img src={p.image_url} alt={p.name} className="max-h-28 w-auto object-contain" />

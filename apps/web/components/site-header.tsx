@@ -82,35 +82,43 @@ export async function SiteHeader() {
                   </svg>
                 </Link>
                 {/* Megamenú */}
-                <div className="invisible absolute left-0 top-full z-50 w-[640px] translate-y-1 pt-2 opacity-0 transition-all duration-150 group-hover/mega:visible group-hover/mega:translate-y-0 group-hover/mega:opacity-100">
-                  <div className="rounded-2xl border border-surface-border/70 bg-white p-5 shadow-soft">
-                    <div className="mb-3 flex items-center justify-between">
-                      <span className="text-xs font-bold uppercase tracking-wide text-ink-muted">
-                        Categorías
-                      </span>
-                      <Link href="/shop" className="text-xs font-semibold text-brand-600 hover:text-brand-700">
-                        Ver toda la tienda →
-                      </Link>
+                <div className="invisible absolute left-0 top-full z-50 w-[720px] translate-y-1 pt-2 opacity-0 transition-all duration-150 group-hover/mega:visible group-hover/mega:translate-y-0 group-hover/mega:opacity-100">
+                  <div className="grid grid-cols-[1fr_220px] overflow-hidden rounded-2xl border border-surface-border/70 bg-white shadow-soft">
+                    <div className="p-5">
+                      <div className="mb-3 flex items-center justify-between">
+                        <span className="text-xs font-bold uppercase tracking-wide text-ink-muted">Comprar por categoría</span>
+                        <Link href="/shop" className="text-xs font-semibold text-brand-600 hover:text-brand-700">Ver todo →</Link>
+                      </div>
+                      <div className="grid grid-cols-2 gap-1.5">
+                        {categories.slice(0, 8).map((c) => (
+                          <Link
+                            key={c.id}
+                            href={`/categoria/${c.slug}`}
+                            className="flex items-center gap-3 rounded-xl p-2 transition hover:bg-brand-50"
+                          >
+                            <span className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-surface-border/60 bg-white p-1">
+                              {c.image_url ? (
+                                // eslint-disable-next-line @next/next/no-img-element
+                                <img src={c.image_url} alt={c.name} className="max-h-full w-auto object-contain" />
+                              ) : (
+                                <span className="text-base">🖥️</span>
+                              )}
+                            </span>
+                            <span className="text-sm font-medium text-ink">{c.name}</span>
+                          </Link>
+                        ))}
+                      </div>
                     </div>
-                    <div className="grid grid-cols-3 gap-2">
-                      {categories.slice(0, 9).map((c) => (
-                        <Link
-                          key={c.id}
-                          href={`/categoria/${c.slug}`}
-                          className="flex items-center gap-3 rounded-xl p-2 transition hover:bg-brand-50"
-                        >
-                          <span className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-surface-border/60 bg-white">
-                            {c.image_url ? (
-                              // eslint-disable-next-line @next/next/no-img-element
-                              <img src={c.image_url} alt={c.name} className="max-h-9 w-auto object-contain" />
-                            ) : (
-                              <span className="text-base">🖥️</span>
-                            )}
-                          </span>
-                          <span className="text-sm font-medium text-ink">{c.name}</span>
-                        </Link>
-                      ))}
-                    </div>
+                    {/* Promo destacada */}
+                    <Link href="/shop" className="group/p relative flex flex-col justify-end overflow-hidden bg-brand-gradient p-4 text-white">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src="/images/para-laptops.webp" alt="Arma tu setup" className="absolute inset-0 h-full w-full object-cover opacity-30 transition group-hover/p:scale-105" />
+                      <div className="relative">
+                        <p className="text-xs font-bold uppercase tracking-wide text-white/80">Destacado</p>
+                        <p className="mt-1 text-lg font-extrabold leading-tight">Arma tu setup ideal</p>
+                        <span className="mt-3 inline-flex rounded-lg bg-white px-3 py-1.5 text-xs font-bold text-brand-600">Ver ofertas →</span>
+                      </div>
+                    </Link>
                   </div>
                 </div>
               </div>

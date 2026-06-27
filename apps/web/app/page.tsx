@@ -33,48 +33,66 @@ export default async function HomePage() {
       <SiteHeader />
       <main>
         {/* HERO */}
-        <section className="bg-surface-subtle">
-          <div className="mx-auto grid max-w-7xl gap-4 px-4 py-6 sm:px-6 lg:grid-cols-3 lg:px-8">
-            <div className="relative overflow-hidden rounded-2xl shadow-card lg:col-span-2">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/images/banner-1.jpg" alt="Lenovo IdeaPad 5" className="h-full w-full object-cover" />
-              <div className="absolute inset-0 flex flex-col justify-center gap-4 bg-gradient-to-r from-brand-900/70 via-brand-700/30 to-transparent p-8 sm:p-12">
-                <span className="w-fit rounded-full bg-celeste/90 px-3 py-1 text-xs font-bold uppercase tracking-wide text-brand-900">
-                  Nueva generación
-                </span>
-                <h1 className="max-w-md text-3xl font-extrabold leading-tight text-white sm:text-5xl">
-                  Lenovo IdeaPad 5 <span className="text-celeste">2en1</span>
-                </h1>
-                <p className="max-w-sm text-sm text-white/85 sm:text-base">
-                  9na Gen · 14&quot; AMD. Potencia y portabilidad para tu día a día.
-                </p>
-                <div className="flex flex-wrap gap-3">
-                  <Link href="/shop" className="rounded-xl bg-white px-5 py-2.5 text-sm font-semibold text-brand-600 transition hover:bg-brand-50">
-                    Comprar ahora
-                  </Link>
-                  <Link href="/shop" className="rounded-xl border border-white/60 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10">
-                    Ver catálogo
-                  </Link>
-                </div>
+        <section className="relative overflow-hidden bg-brand-gradient">
+          <div className="absolute -right-20 -top-24 h-72 w-72 rounded-full bg-white/10 blur-3xl" />
+          <div className="absolute -bottom-24 left-1/4 h-72 w-72 rounded-full bg-white/10 blur-3xl" />
+          <div className="relative mx-auto grid max-w-7xl items-center gap-8 px-4 py-12 sm:px-6 lg:grid-cols-2 lg:px-8 lg:py-16">
+            <div>
+              <span className="inline-flex w-fit rounded-full bg-white/20 px-3 py-1 text-xs font-bold uppercase tracking-wide text-white">
+                Tienda de tecnología
+              </span>
+              <h1 className="mt-4 max-w-lg text-4xl font-extrabold leading-tight text-white sm:text-5xl">
+                La mejor tecnología, con <span className="text-celeste">respaldo real</span>
+              </h1>
+              <p className="mt-4 max-w-md text-white/85">
+                Laptops, componentes, periféricos y repuestos originales. Envío a
+                todo el Perú, garantía y servicio técnico especializado.
+              </p>
+              <div className="mt-6 flex flex-wrap gap-3">
+                <Link href="/shop" className="rounded-xl bg-white px-6 py-3 text-sm font-bold text-brand-600 transition hover:bg-brand-50">
+                  Comprar ahora
+                </Link>
+                <Link href="/asistente" className="rounded-xl border border-white/60 px-6 py-3 text-sm font-bold text-white transition hover:bg-white/10">
+                  Asistente de compra IA
+                </Link>
+              </div>
+              <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-xs font-medium text-white/85">
+                <span>🚚 Envíos a todo el Perú</span>
+                <span>🛡️ Garantía real</span>
+                <span>🔧 Servicio técnico</span>
               </div>
             </div>
-            <div className="grid grid-rows-3 gap-4">
-              {[
-                { img: "/images/banner-2.jpg", t: "Teclado Gamer" },
-                { img: "/images/banner-3.jpg", t: "Fuente de Poder" },
-                { img: "/images/banner-4.jpg", t: "Disco SSD" },
-              ].map((b) => (
-                <Link
-                  key={b.t}
-                  href="/shop"
-                  className="group relative flex min-h-[110px] items-center justify-center overflow-hidden rounded-2xl border border-surface-border/70 bg-white p-2 shadow-card transition hover:border-brand-200 hover:shadow-soft"
-                >
-                  {/* object-contain: muestra el banner completo, sin recortes */}
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={b.img} alt={b.t} className="max-h-full w-auto object-contain transition duration-300 group-hover:scale-105" />
-                </Link>
-              ))}
+            <div className="relative flex justify-center">
+              <div className="overflow-hidden rounded-3xl shadow-2xl ring-1 ring-white/20">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/images/banner-1.jpg" alt="Lenovo IdeaPad 5 2en1" className="h-auto w-full max-w-md object-cover" />
+              </div>
+              <Link href="/shop" className="absolute -bottom-4 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-white px-5 py-2 text-xs font-bold text-brand-600 shadow-soft transition hover:bg-brand-50">
+                Destacado: Lenovo IdeaPad 5 →
+              </Link>
             </div>
+          </div>
+        </section>
+
+        {/* PROMOS (banners sobre tarjetas azules: sin franjas blancas) */}
+        <section className="mx-auto max-w-7xl px-4 pt-10 sm:px-6 lg:px-8">
+          <div className="grid gap-4 sm:grid-cols-3">
+            {[
+              { img: "/images/banner-2.jpg", t: "Periféricos gamer" },
+              { img: "/images/banner-3.jpg", t: "Fuentes de poder" },
+              { img: "/images/banner-4.jpg", t: "Discos SSD" },
+            ].map((b) => (
+              <Link
+                key={b.t}
+                href="/shop"
+                className="group relative flex aspect-[2/1] items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-brand-700 to-brand-900 shadow-card ring-1 ring-brand-900/10 transition hover:shadow-soft"
+              >
+                {/* contain sobre azul: sin recorte y sin franjas blancas */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={b.img} alt={b.t} className="max-h-full max-w-full object-contain transition duration-300 group-hover:scale-105" />
+                <span className="absolute bottom-2 left-3 text-xs font-bold text-white/90 drop-shadow">{b.t}</span>
+              </Link>
+            ))}
           </div>
         </section>
 

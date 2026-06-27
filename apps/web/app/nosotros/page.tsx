@@ -21,6 +21,12 @@ const VALUES = [
   { icon: "📈", t: "Mejora continua", d: "Procesos y tecnología propia para darte un mejor servicio cada día." },
 ];
 
+const WHAT = [
+  { img: "/images/tech-laptops.jpg", t: "Venta de tecnología", d: "Laptops, componentes y periféricos con garantía." },
+  { img: "/images/para-laptops.webp", t: "Repuestos originales", d: "Piezas para que tu equipo nunca te falle." },
+  { img: "/images/soporte-pos.jpg", t: "Servicio y soporte", d: "Reparación especializada y soporte para empresas." },
+];
+
 export default function NosotrosPage() {
   return (
     <PageShell
@@ -28,6 +34,7 @@ export default function NosotrosPage() {
       title="Tecnología con respaldo humano"
       subtitle="En iTech combinamos venta de tecnología, servicio técnico especializado y soporte gestionado para empresas."
     >
+      {/* Historia + imagen */}
       <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
         <div>
           <h2 className="text-2xl font-bold text-ink">Quiénes somos</h2>
@@ -48,16 +55,42 @@ export default function NosotrosPage() {
             <Link href="/contacto" className="rounded-xl border border-brand-200 px-5 py-2.5 text-sm font-semibold text-brand-600 hover:bg-brand-50">Contáctanos</Link>
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-4">
-          {STATS.map((s) => (
-            <div key={s.l} className="rounded-2xl border border-surface-border/70 bg-white p-6 text-center">
-              <p className="text-3xl font-extrabold text-brand-600">{s.v}</p>
-              <p className="mt-1 text-sm text-ink-muted">{s.l}</p>
+        <div className="overflow-hidden rounded-3xl border border-surface-border/70 shadow-card">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/images/tech-laptops.jpg" alt="Tecnología iTech" className="aspect-[4/3] w-full object-cover" />
+        </div>
+      </div>
+
+      {/* Stats */}
+      <div className="mt-12 grid grid-cols-2 gap-4 lg:grid-cols-4">
+        {STATS.map((s) => (
+          <div key={s.l} className="rounded-2xl border border-surface-border/70 bg-white p-6 text-center">
+            <p className="text-3xl font-extrabold text-brand-600">{s.v}</p>
+            <p className="mt-1 text-sm text-ink-muted">{s.l}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Qué hacemos (con imágenes) */}
+      <div className="mt-14">
+        <h2 className="text-2xl font-bold text-ink">Qué hacemos</h2>
+        <div className="mt-6 grid gap-5 sm:grid-cols-3">
+          {WHAT.map((w) => (
+            <div key={w.t} className="overflow-hidden rounded-2xl border border-surface-border/70 bg-white transition hover:shadow-card">
+              <div className="overflow-hidden bg-surface-subtle">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={w.img} alt={w.t} className="aspect-[4/3] w-full object-cover" />
+              </div>
+              <div className="p-5">
+                <h3 className="font-semibold text-ink">{w.t}</h3>
+                <p className="mt-1 text-sm text-ink-soft">{w.d}</p>
+              </div>
             </div>
           ))}
         </div>
       </div>
 
+      {/* Valores */}
       <div className="mt-14">
         <h2 className="text-2xl font-bold text-ink">Nuestros valores</h2>
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -71,6 +104,7 @@ export default function NosotrosPage() {
         </div>
       </div>
 
+      {/* Misión / Visión */}
       <div className="mt-14 grid gap-6 rounded-3xl border border-surface-border/70 bg-surface-subtle p-8 sm:grid-cols-2 sm:p-10">
         <div>
           <h3 className="text-xl font-bold text-ink">Misión</h3>
