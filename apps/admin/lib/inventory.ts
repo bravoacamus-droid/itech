@@ -29,6 +29,32 @@ export async function listInventory(): Promise<InventoryRow[]> {
   return data ?? [];
 }
 
+export async function listInventoryByBranch(branchId: string): Promise<InventoryRow[]> {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("branch_stock")
+    .select("product_id, stock, low_stock_threshold, products(name, brand, image_url, is_active)")
+    .eq("branch_id", branchId)
+    .order("stock", { ascending: true });
+  const rows = (data ?? []) as unknown as {
+    product_id: string;
+    stock: number;
+    low_stock_threshold: number;
+    products: { name: string; brand: string | null; image_url: string | null; is_active: boolean } | null;
+  }[];
+  return rows
+    .filter((r) => r.products)
+    .map((r) => ({
+      id: r.product_id,
+      name: r.products!.name,
+      brand: r.products!.brand,
+      image_url: r.products!.image_url,
+      stock: r.stock,
+      low_stock_threshold: r.low_stock_threshold,
+      is_active: r.products!.is_active,
+    }));
+}
+
 export async function getInventoryItem(id: string): Promise<InventoryRow | null> {
   const supabase = await createClient();
   const { data } = await supabase

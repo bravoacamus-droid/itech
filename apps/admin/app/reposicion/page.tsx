@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { requireAdmin } from "@/lib/auth";
 import { getReplenishment } from "@/lib/replenishment";
+import { listBranches } from "@/lib/branches";
 import { AdminHeader } from "@/components/admin-header";
 
 export const dynamic = "force-dynamic";
@@ -8,9 +9,16 @@ export const dynamic = "force-dynamic";
 const WINDOW = 30;
 const TARGET = 30;
 
-export default async function ReplenishmentPage() {
+export default async function ReplenishmentPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ branch?: string }>;
+}) {
   const { user } = await requireAdmin();
-  const items = await getReplenishment(WINDOW, TARGET);
+  const sp = await searchParams;
+  const branchId = sp.branch ?? null;
+  const branches = await listBranches();
+  const items = await getReplenishment(branchId, WINDOW, TARGET);
   const toRestock = items.filter((i) => i.suggested_qty > 0);
   const totalUnits = toRestock.reduce((s, i) => s + i.suggested_qty, 0);
 
@@ -21,8 +29,26 @@ export default async function ReplenishmentPage() {
         <h1 className="text-2xl font-bold text-ink">Proyección de reposición</h1>
         <p className="text-sm text-ink-soft">
           Sugerencia de compra según ventas de los últimos {WINDOW} días, para
-          mantener {TARGET} días de stock.
+          mantener {TARGET} días de stock{branchId ? " en la sede" : " (total)"}.
         </p>
+
+        <div className="mt-4 flex flex-wrap gap-2">
+          <Link
+            href="/reposicion"
+            className={`rounded-full px-3 py-1.5 text-xs font-medium ${!branchId ? "bg-brand-500 text-white" : "bg-surface-subtle text-ink-soft hover:bg-brand-50"}`}
+          >
+            Total
+          </Link>
+          {branches.map((b) => (
+            <Link
+              key={b.id}
+              href={`/reposicion?branch=${b.id}`}
+              className={`rounded-full px-3 py-1.5 text-xs font-medium ${branchId === b.id ? "bg-brand-500 text-white" : "bg-surface-subtle text-ink-soft hover:bg-brand-50"}`}
+            >
+              {b.name}
+            </Link>
+          ))}
+        </div>
 
         <div className="mt-5 grid gap-4 sm:grid-cols-3">
           <div className="rounded-2xl border border-surface-border/70 bg-white p-5">

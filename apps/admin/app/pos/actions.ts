@@ -15,6 +15,22 @@ export async function openCash(formData: FormData) {
   revalidatePath("/pos");
 }
 
+export async function clockIn(branchId: string | null) {
+  const { supabase } = await requireAdmin();
+  const { error } = await supabase.rpc("clock_in" as never, {
+    p_branch: branchId,
+  } as never);
+  if (error) throw new Error(error.message);
+  revalidatePath("/pos");
+}
+
+export async function clockOut() {
+  const { supabase } = await requireAdmin();
+  const { error } = await supabase.rpc("clock_out" as never, {} as never);
+  if (error) throw new Error(error.message);
+  revalidatePath("/pos");
+}
+
 export async function closeCash(sessionId: string, formData: FormData) {
   const { supabase } = await requireAdmin();
   const counted = parseFloat(String(formData.get("counted") ?? "0")) || 0;

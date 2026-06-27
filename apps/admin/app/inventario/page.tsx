@@ -1,14 +1,23 @@
 import Link from "next/link";
 import { requireAdmin } from "@/lib/auth";
-import { listInventory, isLow } from "@/lib/inventory";
+import { listInventory, listInventoryByBranch, isLow } from "@/lib/inventory";
+import { listBranches } from "@/lib/branches";
 import { AdminHeader } from "@/components/admin-header";
 
 export const dynamic = "force-dynamic";
 
-export default async function InventoryPage() {
+export default async function InventoryPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ branch?: string }>;
+}) {
   const { user } = await requireAdmin();
-  const items = await listInventory();
+  const sp = await searchParams;
+  const branchId = sp.branch;
+  const branches = await listBranches();
+  const items = branchId ? await listInventoryByBranch(branchId) : await listInventory();
   const low = items.filter(isLow);
+  const scope = branchId ? branches.find((b) => b.id === branchId)?.name ?? "Sede" : "Total (todas las sedes)";
 
   return (
     <div className="min-h-screen">
@@ -17,14 +26,32 @@ export default async function InventoryPage() {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h1 className="text-2xl font-bold text-ink">Inventario</h1>
-            <p className="text-sm text-ink-soft">{items.length} productos</p>
+            <p className="text-sm text-ink-soft">{items.length} productos · {scope}</p>
           </div>
           <Link
-            href="/reposicion"
+            href={branchId ? `/reposicion?branch=${branchId}` : "/reposicion"}
             className="rounded-xl border border-brand-200 px-4 py-2 text-sm font-semibold text-brand-600 transition hover:bg-brand-50"
           >
             Proyección de reposición →
           </Link>
+        </div>
+
+        <div className="mt-4 flex flex-wrap gap-2">
+          <Link
+            href="/inventario"
+            className={`rounded-full px-3 py-1.5 text-xs font-medium ${!branchId ? "bg-brand-500 text-white" : "bg-surface-subtle text-ink-soft hover:bg-brand-50"}`}
+          >
+            Total
+          </Link>
+          {branches.map((b) => (
+            <Link
+              key={b.id}
+              href={`/inventario?branch=${b.id}`}
+              className={`rounded-full px-3 py-1.5 text-xs font-medium ${branchId === b.id ? "bg-brand-500 text-white" : "bg-surface-subtle text-ink-soft hover:bg-brand-50"}`}
+            >
+              {b.name}
+            </Link>
+          ))}
         </div>
 
         {low.length > 0 && (

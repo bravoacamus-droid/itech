@@ -5,6 +5,7 @@ export type CashSession = {
   opened_at: string;
   opening_amount: number;
   status: string;
+  branch_id: string | null;
 };
 
 export type PosProduct = {
@@ -21,7 +22,7 @@ export async function getOpenSession(): Promise<CashSession | null> {
   const supabase = await createClient();
   const { data } = await supabase
     .from("cash_sessions")
-    .select("id, opened_at, opening_amount, status")
+    .select("id, opened_at, opening_amount, status, branch_id")
     .eq("status", "abierta")
     .order("opened_at", { ascending: false })
     .limit(1)
@@ -60,6 +61,21 @@ export async function getPosProducts(): Promise<PosProduct[]> {
     .order("name", { ascending: true })
     .returns<PosProduct[]>();
   return data ?? [];
+}
+
+export async function getMyOpenTimeEntry() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return null;
+  const { data } = await supabase
+    .from("time_entries")
+    .select("id, clock_in")
+    .eq("user_id", user.id)
+    .is("clock_out", null)
+    .maybeSingle();
+  return data as { id: string; clock_in: string } | null;
 }
 
 export function money(value: number | string | null | undefined): string {

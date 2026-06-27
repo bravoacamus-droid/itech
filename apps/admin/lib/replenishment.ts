@@ -13,11 +13,13 @@ export type ReplenishItem = {
 };
 
 export async function getReplenishment(
+  branchId: string | null = null,
   windowDays = 30,
   targetDays = 30,
 ): Promise<ReplenishItem[]> {
   const supabase = await createClient();
   const { data, error } = await supabase.rpc("replenishment_report" as never, {
+    p_branch: branchId,
     p_window: windowDays,
     p_target_days: targetDays,
   } as never);

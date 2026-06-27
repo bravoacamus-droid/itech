@@ -6,10 +6,11 @@ import {
   getOpenSession,
   getSessionSummary,
   getPosProducts,
+  getMyOpenTimeEntry,
   money,
 } from "@/lib/pos";
 import { listBranches } from "@/lib/branches";
-import { openCash, closeCash } from "@/app/pos/actions";
+import { openCash, closeCash, clockIn, clockOut } from "@/app/pos/actions";
 
 export const dynamic = "force-dynamic";
 
@@ -63,6 +64,7 @@ export default async function PosPage() {
   const summary = await getSessionSummary(session.id);
   const products = await getPosProducts();
   const expectedCash = Number(session.opening_amount) + summary.cash;
+  const openEntry = await getMyOpenTimeEntry();
 
   return (
     <div className="min-h-screen">
@@ -87,6 +89,25 @@ export default async function PosPage() {
             <div>
               <span className="block text-xs uppercase text-ink-muted">Efectivo esperado</span>
               <span className="font-bold text-brand-600">{money(expectedCash)}</span>
+            </div>
+            <div>
+              <span className="block text-xs uppercase text-ink-muted">Mi turno</span>
+              {openEntry ? (
+                <form action={clockOut}>
+                  <span className="mr-2 text-xs text-success">
+                    Entrada {new Date(openEntry.clock_in).toLocaleTimeString("es-PE", { hour: "2-digit", minute: "2-digit" })}
+                  </span>
+                  <button className="rounded-lg bg-danger/10 px-2.5 py-1 text-xs font-semibold text-danger hover:bg-danger/20">
+                    Marcar salida
+                  </button>
+                </form>
+              ) : (
+                <form action={clockIn.bind(null, session.branch_id ?? null)}>
+                  <button className="rounded-lg bg-success/10 px-2.5 py-1 text-xs font-semibold text-success hover:bg-success/20">
+                    Marcar entrada
+                  </button>
+                </form>
+              )}
             </div>
           </div>
         </div>
