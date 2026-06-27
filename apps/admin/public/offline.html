@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es-PE">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sin conexión — iTech ERP</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: #f8fafc; color: #0f172a; min-height: 100vh; display: flex;
+      align-items: center; justify-content: center; padding: 24px; }
+    .card { max-width: 380px; text-align: center; background: #fff; border: 1px solid #e2e8f0;
+      border-radius: 20px; padding: 36px 28px; box-shadow: 0 8px 30px rgba(2,132,199,.08); }
+    .logo { width: 64px; height: 64px; margin: 0 auto 16px; border-radius: 16px;
+      background: linear-gradient(160deg,#38bdf8,#0284c7); color: #fff; font-weight: 800;
+      font-size: 28px; display: flex; align-items: center; justify-content: center; }
+    h1 { font-size: 20px; margin: 0 0 8px; }
+    p { color: #475569; font-size: 14px; line-height: 1.5; margin: 0 0 20px; }
+    button { background: #0ea5e9; color: #fff; border: 0; border-radius: 12px;
+      padding: 12px 20px; font-size: 14px; font-weight: 600; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo">iT</div>
+    <h1>Sin conexión</h1>
+    <p>No hay internet en este momento. Las páginas que ya visitaste siguen
+      disponibles; vuelve a intentar cuando recuperes la señal.</p>
+    <button onclick="location.reload()">Reintentar</button>
+  </div>
+</body>
+</html>

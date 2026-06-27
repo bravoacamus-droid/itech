@@ -6,8 +6,11 @@ export type Transfer = {
   product: string;
   from_branch: string;
   to_branch: string;
+  from_branch_id: string;
+  to_branch_id: string;
   quantity: number;
   note: string | null;
+  status: string;
   created_at: string;
 };
 
@@ -15,7 +18,7 @@ export async function listTransfers(limit = 50): Promise<Transfer[]> {
   const supabase = await createClient();
   const { data } = await supabase
     .from("stock_transfers")
-    .select("id, transfer_number, product_id, from_branch, to_branch, quantity, note, created_at")
+    .select("id, transfer_number, product_id, from_branch, to_branch, quantity, note, status, created_at")
     .order("created_at", { ascending: false })
     .limit(limit);
   const rows = (data ?? []) as unknown as {
@@ -26,6 +29,7 @@ export async function listTransfers(limit = 50): Promise<Transfer[]> {
     to_branch: string;
     quantity: number;
     note: string | null;
+    status: string;
     created_at: string;
   }[];
   if (!rows.length) return [];
@@ -47,8 +51,11 @@ export async function listTransfers(limit = 50): Promise<Transfer[]> {
     product: pName[r.product_id] ?? "—",
     from_branch: bName[r.from_branch] ?? "—",
     to_branch: bName[r.to_branch] ?? "—",
+    from_branch_id: r.from_branch,
+    to_branch_id: r.to_branch,
     quantity: r.quantity,
     note: r.note,
+    status: r.status,
     created_at: r.created_at,
   }));
 }

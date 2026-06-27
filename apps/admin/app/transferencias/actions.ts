@@ -26,3 +26,19 @@ export async function createTransfer(formData: FormData) {
   revalidatePath("/transferencias");
   revalidatePath("/inventario");
 }
+
+export async function receiveTransfer(id: string) {
+  const { supabase } = await requireStaff();
+  const { error } = await supabase.rpc("receive_transfer" as never, { p_id: id } as never);
+  if (error) throw new Error(error.message);
+  revalidatePath("/transferencias");
+  revalidatePath("/inventario");
+}
+
+export async function cancelTransfer(id: string) {
+  const { supabase } = await requireStaff();
+  const { error } = await supabase.rpc("cancel_transfer" as never, { p_id: id } as never);
+  if (error) throw new Error(error.message);
+  revalidatePath("/transferencias");
+  revalidatePath("/inventario");
+}
