@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { requireAdmin } from "@/lib/auth";
+import { requireStaff } from "@/lib/auth";
 import { listInventory, listInventoryByBranch, isLow } from "@/lib/inventory";
-import { listBranches } from "@/lib/branches";
+import { getBranchScope } from "@/lib/branches";
 import { AdminHeader } from "@/components/admin-header";
 
 export const dynamic = "force-dynamic";
@@ -11,10 +11,13 @@ export default async function InventoryPage({
 }: {
   searchParams: Promise<{ branch?: string }>;
 }) {
-  const { user } = await requireAdmin();
+  const { user } = await requireStaff();
   const sp = await searchParams;
-  const branchId = sp.branch;
-  const branches = await listBranches();
+  const { branches, isAdmin } = await getBranchScope();
+  // Un no-admin no ve el total global: se fuerza a una de sus sedes.
+  const allowedIds = new Set(branches.map((b) => b.id));
+  let branchId = sp.branch && allowedIds.has(sp.branch) ? sp.branch : undefined;
+  if (!isAdmin && !branchId) branchId = branches[0]?.id;
   const items = branchId ? await listInventoryByBranch(branchId) : await listInventory();
   const low = items.filter(isLow);
   const scope = branchId ? branches.find((b) => b.id === branchId)?.name ?? "Sede" : "Total (todas las sedes)";
@@ -37,12 +40,14 @@ export default async function InventoryPage({
         </div>
 
         <div className="mt-4 flex flex-wrap gap-2">
-          <Link
-            href="/inventario"
-            className={`rounded-full px-3 py-1.5 text-xs font-medium ${!branchId ? "bg-brand-500 text-white" : "bg-surface-subtle text-ink-soft hover:bg-brand-50"}`}
-          >
-            Total
-          </Link>
+          {isAdmin && (
+            <Link
+              href="/inventario"
+              className={`rounded-full px-3 py-1.5 text-xs font-medium ${!branchId ? "bg-brand-500 text-white" : "bg-surface-subtle text-ink-soft hover:bg-brand-50"}`}
+            >
+              Total
+            </Link>
+          )}
           {branches.map((b) => (
             <Link
               key={b.id}

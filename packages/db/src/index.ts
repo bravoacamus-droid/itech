@@ -8,7 +8,7 @@ export type {
   Product,
   ProductWithCategory,
 } from "./types";
-export { ADMIN_ROLES } from "./types";
+export { ADMIN_ROLES, STAFF_ROLES } from "./types";
 
 function requireEnv(name: string): string {
   const v = process.env[name];

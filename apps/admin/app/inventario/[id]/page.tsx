@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { requireAdmin } from "@/lib/auth";
+import { requireStaff } from "@/lib/auth";
 import { getInventoryItem, listMovements, isLow } from "@/lib/inventory";
-import { listBranches, getProductBranchStock } from "@/lib/branches";
+import { getBranchScope, getProductBranchStock } from "@/lib/branches";
 import { AdminHeader } from "@/components/admin-header";
 import { Button } from "@itech/ui";
 import { adjustStock } from "@/app/inventario/actions";
@@ -21,16 +21,17 @@ export default async function AdjustStockPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { user } = await requireAdmin();
+  const { user } = await requireStaff();
   const { id } = await params;
   const item = await getInventoryItem(id);
   if (!item) notFound();
 
-  const [movements, branches, branchStock] = await Promise.all([
+  const [movements, scope, branchStock] = await Promise.all([
     listMovements(id),
-    listBranches(),
+    getBranchScope(),
     getProductBranchStock(id),
   ]);
+  const branches = scope.branches;
   const action = adjustStock.bind(null, id);
   const low = isLow(item);
   const stockByBranch: Record<string, number> = {};

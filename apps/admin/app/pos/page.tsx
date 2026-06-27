@@ -1,4 +1,4 @@
-import { requireAdmin } from "@/lib/auth";
+import { requireStaff } from "@/lib/auth";
 import { AdminHeader } from "@/components/admin-header";
 import { Button } from "@itech/ui";
 import { PosTerminal } from "@/components/pos-terminal";
@@ -9,23 +9,30 @@ import {
   getMyOpenTimeEntry,
   money,
 } from "@/lib/pos";
-import { listBranches } from "@/lib/branches";
+import { getBranchScope } from "@/lib/branches";
 import { openCash, closeCash, clockIn, clockOut } from "@/app/pos/actions";
 
 export const dynamic = "force-dynamic";
 
 export default async function PosPage() {
-  const { user } = await requireAdmin();
+  const { user } = await requireStaff();
   const session = await getOpenSession();
 
   if (!session) {
-    const branches = (await listBranches()).filter((b) => b.is_active);
+    const branches = (await getBranchScope()).branches.filter((b) => b.is_active);
     return (
       <div className="min-h-screen">
         <AdminHeader email={user.email} />
         <main className="mx-auto max-w-md px-4 py-16 sm:px-6 lg:px-8">
           <div className="rounded-2xl border border-surface-border/70 bg-white p-8 text-center shadow-card">
             <h1 className="text-2xl font-bold text-ink">Abrir caja</h1>
+            {branches.length === 0 ? (
+              <p className="mt-3 text-sm text-ink-soft">
+                No tienes una sucursal asignada. Pide a un administrador que te
+                asigne una en <span className="font-medium">Accesos</span>.
+              </p>
+            ) : (
+            <>
             <p className="mt-2 text-sm text-ink-soft">
               Elige la sucursal e ingresa el monto inicial en efectivo.
             </p>
@@ -55,6 +62,8 @@ export default async function PosPage() {
               </div>
               <Button type="submit" className="w-full">Abrir caja</Button>
             </form>
+            </>
+            )}
           </div>
         </main>
       </div>

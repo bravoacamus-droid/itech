@@ -14,8 +14,19 @@ export type AppRole =
   | "org_admin"
   | "super_admin";
 
-/** Roles con acceso al back-office ERP. */
+/** Roles con acceso total al back-office ERP. */
 export const ADMIN_ROLES: AppRole[] = ["super_admin", "org_admin"];
+
+/** Roles que operan el back-office (acotados por sucursal vía RLS). */
+export const STAFF_ROLES: AppRole[] = [
+  "super_admin",
+  "org_admin",
+  "branch_manager",
+  "cashier",
+  "warehouse_clerk",
+  "accountant",
+  "technician",
+];
 
 // ---- Tipos de dominio del catálogo ----
 export type Category = {

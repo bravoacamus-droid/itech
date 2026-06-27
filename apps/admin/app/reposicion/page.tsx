@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { requireAdmin } from "@/lib/auth";
+import { requireStaff } from "@/lib/auth";
 import { getReplenishment } from "@/lib/replenishment";
-import { listBranches } from "@/lib/branches";
+import { getBranchScope } from "@/lib/branches";
 import { AdminHeader } from "@/components/admin-header";
 
 export const dynamic = "force-dynamic";
@@ -14,10 +14,12 @@ export default async function ReplenishmentPage({
 }: {
   searchParams: Promise<{ branch?: string }>;
 }) {
-  const { user } = await requireAdmin();
+  const { user } = await requireStaff();
   const sp = await searchParams;
-  const branchId = sp.branch ?? null;
-  const branches = await listBranches();
+  const { branches, isAdmin } = await getBranchScope();
+  const allowedIds = new Set(branches.map((b) => b.id));
+  let branchId: string | null = sp.branch && allowedIds.has(sp.branch) ? sp.branch : null;
+  if (!isAdmin && !branchId) branchId = branches[0]?.id ?? null;
   const items = await getReplenishment(branchId, WINDOW, TARGET);
   const toRestock = items.filter((i) => i.suggested_qty > 0);
   const totalUnits = toRestock.reduce((s, i) => s + i.suggested_qty, 0);
@@ -33,12 +35,14 @@ export default async function ReplenishmentPage({
         </p>
 
         <div className="mt-4 flex flex-wrap gap-2">
-          <Link
-            href="/reposicion"
-            className={`rounded-full px-3 py-1.5 text-xs font-medium ${!branchId ? "bg-brand-500 text-white" : "bg-surface-subtle text-ink-soft hover:bg-brand-50"}`}
-          >
-            Total
-          </Link>
+          {isAdmin && (
+            <Link
+              href="/reposicion"
+              className={`rounded-full px-3 py-1.5 text-xs font-medium ${!branchId ? "bg-brand-500 text-white" : "bg-surface-subtle text-ink-soft hover:bg-brand-50"}`}
+            >
+              Total
+            </Link>
+          )}
           {branches.map((b) => (
             <Link
               key={b.id}

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Logo } from "@itech/ui";
-import { ADMIN_ROLES, type AppRole } from "@itech/db";
+import { ADMIN_ROLES, STAFF_ROLES, type AppRole } from "@itech/db";
 import { createClient } from "@/lib/supabase/server";
 import { getMetrics, money } from "@/lib/metrics";
 import { SalesChart } from "@/components/sales-chart";
@@ -20,16 +20,18 @@ const MODULES: {
   desc: string;
   phase: string;
   href?: string;
+  staff?: boolean; // visible para staff no-admin
 }[] = [
   { name: "Catálogo", desc: "Productos, imágenes, precios y descuentos", phase: "Disponible", href: "/catalogo" },
   { name: "Categorías", desc: "Organiza el catálogo por categorías", phase: "Disponible", href: "/categorias" },
   { name: "Pedidos", desc: "Pedidos de la tienda y su estado", phase: "Disponible", href: "/pedidos" },
-  { name: "Inventario", desc: "Stock, alarmas y movimientos", phase: "Disponible", href: "/inventario" },
-  { name: "Reposición", desc: "Predicción de compra según ventas", phase: "Disponible", href: "/reposicion" },
+  { name: "Inventario", desc: "Stock, alarmas y movimientos", phase: "Disponible", href: "/inventario", staff: true },
+  { name: "Reposición", desc: "Predicción de compra según ventas", phase: "Disponible", href: "/reposicion", staff: true },
+  { name: "Transferencias", desc: "Mover stock entre sucursales", phase: "Disponible", href: "/transferencias", staff: true },
   { name: "Configuración", desc: "WhatsApp y datos de la tienda", phase: "Disponible", href: "/configuracion" },
-  { name: "POS / Caja", desc: "Venta presencial y arqueo de caja", phase: "Disponible", href: "/pos" },
+  { name: "POS / Caja", desc: "Venta presencial y arqueo de caja", phase: "Disponible", href: "/pos", staff: true },
   { name: "Cotizaciones", desc: "Cotizador con branding (PDF/enlace)", phase: "Disponible", href: "/cotizaciones" },
-  { name: "Reparaciones", desc: "Tickets, estados, técnico y seguimiento", phase: "Disponible", href: "/reparaciones" },
+  { name: "Reparaciones", desc: "Tickets, estados, técnico y seguimiento", phase: "Disponible", href: "/reparaciones", staff: true },
   { name: "Facturación SUNAT", desc: "Comprobantes electrónicos y certificado", phase: "Disponible", href: "/facturacion" },
   { name: "CRM + IA", desc: "Pipeline automático con Gemini y RAG", phase: "Fase 5" },
   { name: "Empresas (B2B)", desc: "Empresas, flota y miembros", phase: "Disponible", href: "/empresas" },
@@ -37,7 +39,8 @@ const MODULES: {
   { name: "Panel B2B", desc: "SLA y tickets por empresa", phase: "Disponible", href: "/panel-b2b" },
   { name: "Notificaciones", desc: "Avisos automáticos (WhatsApp/email)", phase: "Disponible", href: "/notificaciones" },
   { name: "Sucursales", desc: "Stock y ventas por sede (comparativo)", phase: "Disponible", href: "/sucursales" },
-  { name: "Empleados", desc: "Asistencia / control de horario", phase: "Disponible", href: "/empleados" },
+  { name: "Empleados", desc: "Asistencia / control de horario", phase: "Disponible", href: "/empleados", staff: true },
+  { name: "Accesos", desc: "Roles y sucursales por usuario", phase: "Disponible", href: "/accesos" },
 ];
 
 export default async function DashboardPage() {
@@ -57,7 +60,8 @@ export default async function DashboardPage() {
     .single();
 
   const role = (profileRow as { role: AppRole } | null)?.role;
-  const isAuthorized = !!role && ADMIN_ROLES.includes(role);
+  const isAuthorized = !!role && STAFF_ROLES.includes(role);
+  const isAdmin = !!role && ADMIN_ROLES.includes(role);
 
   if (!isAuthorized) {
     return (
@@ -80,8 +84,9 @@ export default async function DashboardPage() {
     );
   }
 
-  const metrics = await getMetrics();
+  const metrics = isAdmin ? await getMetrics() : null;
   const lowStockCount = metrics?.low_stock_count ?? 0;
+  const modules = MODULES.filter((m) => isAdmin || m.staff);
 
   return (
     <div className="min-h-screen">
@@ -201,7 +206,7 @@ export default async function DashboardPage() {
 
         <h2 className="mt-10 mb-4 text-lg font-bold text-ink">Módulos</h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {MODULES.map((m) => {
+          {modules.map((m) => {
             const inner = (
               <>
                 <div className="mb-3 h-10 w-10 rounded-xl bg-brand-gradient" />
