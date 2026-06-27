@@ -8,6 +8,7 @@ import {
   getPosProducts,
   money,
 } from "@/lib/pos";
+import { listBranches } from "@/lib/branches";
 import { openCash, closeCash } from "@/app/pos/actions";
 
 export const dynamic = "force-dynamic";
@@ -17,6 +18,7 @@ export default async function PosPage() {
   const session = await getOpenSession();
 
   if (!session) {
+    const branches = (await listBranches()).filter((b) => b.is_active);
     return (
       <div className="min-h-screen">
         <AdminHeader email={user.email} />
@@ -24,20 +26,33 @@ export default async function PosPage() {
           <div className="rounded-2xl border border-surface-border/70 bg-white p-8 text-center shadow-card">
             <h1 className="text-2xl font-bold text-ink">Abrir caja</h1>
             <p className="mt-2 text-sm text-ink-soft">
-              Ingresa el monto inicial en efectivo para comenzar a vender.
+              Elige la sucursal e ingresa el monto inicial en efectivo.
             </p>
-            <form action={openCash} className="mt-6 space-y-4">
-              <input
-                name="opening"
-                type="number"
-                step="0.01"
-                min={0}
-                defaultValue="0"
-                className="w-full rounded-xl border border-surface-border px-3 py-2.5 text-center text-lg font-semibold outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-200"
-              />
-              <Button type="submit" className="w-full">
-                Abrir caja
-              </Button>
+            <form action={openCash} className="mt-6 space-y-4 text-left">
+              <div>
+                <label className="mb-1 block text-sm font-medium text-ink">Sucursal</label>
+                <select
+                  name="branch_id"
+                  defaultValue={branches.find((b) => b.is_default)?.id ?? branches[0]?.id ?? ""}
+                  className="w-full rounded-xl border border-surface-border px-3 py-2.5 text-sm outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-200"
+                >
+                  {branches.map((b) => (
+                    <option key={b.id} value={b.id}>{b.name}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="mb-1 block text-sm font-medium text-ink">Monto inicial (S/)</label>
+                <input
+                  name="opening"
+                  type="number"
+                  step="0.01"
+                  min={0}
+                  defaultValue="0"
+                  className="w-full rounded-xl border border-surface-border px-3 py-2.5 text-center text-lg font-semibold outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-200"
+                />
+              </div>
+              <Button type="submit" className="w-full">Abrir caja</Button>
             </form>
           </div>
         </main>

@@ -36,7 +36,7 @@ const MODULES: {
   { name: "Soporte (Helpdesk)", desc: "Tickets B2B con SLA", phase: "Disponible", href: "/soporte" },
   { name: "Panel B2B", desc: "SLA y tickets por empresa", phase: "Disponible", href: "/panel-b2b" },
   { name: "Notificaciones", desc: "Avisos automáticos (WhatsApp/email)", phase: "Disponible", href: "/notificaciones" },
-  { name: "Multi-sucursal", desc: "Dashboards y empleados", phase: "Fase 7" },
+  { name: "Sucursales", desc: "Stock y ventas por sede (comparativo)", phase: "Disponible", href: "/sucursales" },
 ];
 
 export default async function DashboardPage() {

@@ -75,6 +75,12 @@ export function AdminHeader({ email }: { email?: string }) {
               Inventario
             </Link>
             <Link
+              href="/sucursales"
+              className="rounded-lg px-3 py-2 text-sm font-medium text-ink-soft transition hover:bg-brand-50 hover:text-brand-600"
+            >
+              Sucursales
+            </Link>
+            <Link
               href="/reposicion"
               className="rounded-lg px-3 py-2 text-sm font-medium text-ink-soft transition hover:bg-brand-50 hover:text-brand-600"
             >

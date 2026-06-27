@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireAdmin } from "@/lib/auth";
 import { getInventoryItem, listMovements, isLow } from "@/lib/inventory";
+import { listBranches, getProductBranchStock } from "@/lib/branches";
 import { AdminHeader } from "@/components/admin-header";
 import { Button } from "@itech/ui";
 import { adjustStock } from "@/app/inventario/actions";
@@ -25,9 +26,15 @@ export default async function AdjustStockPage({
   const item = await getInventoryItem(id);
   if (!item) notFound();
 
-  const movements = await listMovements(id);
+  const [movements, branches, branchStock] = await Promise.all([
+    listMovements(id),
+    listBranches(),
+    getProductBranchStock(id),
+  ]);
   const action = adjustStock.bind(null, id);
   const low = isLow(item);
+  const stockByBranch: Record<string, number> = {};
+  branchStock.forEach((bs) => (stockByBranch[bs.branch_id] = bs.stock));
 
   return (
     <div className="min-h-screen">
@@ -60,6 +67,20 @@ export default async function AdjustStockPage({
               Registrar movimiento
             </h2>
             <div className="space-y-4">
+              <div>
+                <label className="mb-1 block text-sm font-medium text-ink">Sucursal</label>
+                <select
+                  name="branch_id"
+                  defaultValue={branches.find((b) => b.is_default)?.id ?? branches[0]?.id ?? ""}
+                  className="w-full rounded-xl border border-surface-border px-3 py-2.5 text-sm outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-200"
+                >
+                  {branches.map((b) => (
+                    <option key={b.id} value={b.id}>
+                      {b.name} (stock: {stockByBranch[b.id] ?? 0})
+                    </option>
+                  ))}
+                </select>
+              </div>
               <div>
                 <label className="mb-1 block text-sm font-medium text-ink">Tipo</label>
                 <select
